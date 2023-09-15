@@ -4,6 +4,7 @@ export const NAVIGATION = {
   HOME: "Home",
   DISCOVER: "Discover",
   ITEMSCREEN: "ItemScreen",
+  ITINERARY: "CreateItinerary",
   prod: {
     url: `http://baapi.inland.in/V1/BAAPI.svc/BAAPI`, // prod
   },

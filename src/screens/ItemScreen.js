@@ -8,8 +8,9 @@ import {
 } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import { AppButton,AppText } from "../components";
+import { FontAwesome, FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AppButton, AppText } from "../components";
+import { NAVIGATION } from "../constants/routes";
 
 const ItemScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -52,7 +53,7 @@ const ItemScreen = ({ route }) => {
               <AppText className="text-[12px] font-bold text-gray-100">
                 {data?.price_level}
               </AppText>
-              <Text className="text-[32px] font-bold text-red-100">
+              <Text className="text-[12px] font-bold text-red-100">
                 {data?.price}
               </Text>
             </View>
@@ -133,7 +134,10 @@ const ItemScreen = ({ route }) => {
             ))}
           </View>
         )}
-
+        <TouchableOpacity onPress={() => navigation.navigate(NAVIGATION.ITINERARY)} className='flex-row items-center justify-center'>
+          <AppText className="text-[#428288] text-[14px] font-bold right-1">Create Itinerary</AppText>
+          <Ionicons name="create" size={24} color="black" />
+        </TouchableOpacity>
         <View className=" space-y-2 mt-4 bg-gray-100 rounded-2xl px-4 py-2">
           {data?.phone && (
             <View className="items-center flex-row space-x-6">
