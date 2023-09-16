@@ -9,10 +9,11 @@ import { formatDate, formatTimestamp } from '../constants/functions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const CreateItinerary = ({ route }) => {
   const { data } = route?.params
+  const asyncStorageKey = data.name.split(' ')[0];
   const [ItineraryData, setItineraryData] = useState([])
   const [date, setDate] = useState(new Date);
-  const [name, setName] = useState("Nilesh");
-  const [description, setDescription] = useState("setDescription");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [mode, setMode] = useState('date');
   const [isStartTimePickerVisible, setIsStartTimePickerVisible] = useState(false);
   const [startTime, setStartTime] = useState(new Date);
@@ -65,7 +66,7 @@ const CreateItinerary = ({ route }) => {
           },
         ];
       }
-      await AsyncStorage.setItem('ItineraryData', JSON.stringify(updatedItems));
+      await AsyncStorage.setItem(asyncStorageKey, JSON.stringify(updatedItems));
       setEditItinaryItem(null);
       setItineraryData(updatedItems);
       setName("");
@@ -82,7 +83,7 @@ const CreateItinerary = ({ route }) => {
   const getInitialData = async () => {
     setloading(true);
     try {
-      const data = JSON.parse(await AsyncStorage.getItem('ItineraryData')) || []
+      const data = JSON.parse(await AsyncStorage.getItem(asyncStorageKey)) || []
       setItineraryData(data)
       setloading(false);
     } catch (error) {
@@ -96,7 +97,7 @@ const CreateItinerary = ({ route }) => {
   const deleteItineraryItem = async (id) => {
     try {
       const updatedItems = ItineraryData.filter(item => item.id !== id);
-      await AsyncStorage.setItem('ItineraryData', JSON.stringify(updatedItems));
+      await AsyncStorage.setItem(asyncStorageKey, JSON.stringify(updatedItems));
       setItineraryData(updatedItems);
     } catch (error) {
       console.log({ error });
@@ -108,7 +109,7 @@ const CreateItinerary = ({ route }) => {
       const updatedItems = ItineraryData.map(item => (
         item.id === id ? { ...item, checked: !item.checked } : item
       ));
-      await AsyncStorage.setItem('ItineraryData', JSON.stringify(updatedItems));
+      await AsyncStorage.setItem(asyncStorageKey, JSON.stringify(updatedItems));
       setItineraryData(updatedItems);
     } catch (error) {
       console.log({ error });
