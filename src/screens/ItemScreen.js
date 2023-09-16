@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome, FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { AppButton, AppText } from "../components";
@@ -14,13 +14,8 @@ import { NAVIGATION } from "../constants/routes";
 
 const ItemScreen = ({ route }) => {
   const navigation = useNavigation();
-
   const data = route?.params?.param;
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, []);
+
 
   return (
     <SafeAreaView className="flex-1 bg-white relative py-10">
@@ -116,8 +111,14 @@ const ItemScreen = ({ route }) => {
           )}
         </View>
 
+        <TouchableOpacity onPress={() => navigation.navigate(NAVIGATION.ITINERARY, { data })} 
+        className='flex-row items-center self-end my-2 justify-center'>
+          <AppText className="text-[#428288] text-[18px] font-bold right-1">Create Itinerary</AppText>
+          <Ionicons name="create" size={24} color="black" />
+        </TouchableOpacity>
+
         {data?.description && (
-          <Text className="mt-4 tracking-wide text-[16px] font-semibold text-[#97A6AF]">
+          <Text className=" tracking-wide text-[16px] font-semibold text-[#97A6AF]">
             {data?.description}
           </Text>
         )}
@@ -134,10 +135,7 @@ const ItemScreen = ({ route }) => {
             ))}
           </View>
         )}
-        <TouchableOpacity onPress={() => navigation.navigate(NAVIGATION.ITINERARY)} className='flex-row items-center justify-center'>
-          <AppText className="text-[#428288] text-[14px] font-bold right-1">Create Itinerary</AppText>
-          <Ionicons name="create" size={24} color="black" />
-        </TouchableOpacity>
+
         <View className=" space-y-2 mt-4 bg-gray-100 rounded-2xl px-4 py-2">
           {data?.phone && (
             <View className="items-center flex-row space-x-6">

@@ -31,7 +31,7 @@ function AppNavigator() {
     const options = { headerShown: false }
     return (
         <Stack.Navigator>
-            {!user ?
+            {user === null ?
                 <Stack.Screen options={options} name={NAVIGATION.LOGIN} component={LoginScreen} />
                 :
                 <>

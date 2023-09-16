@@ -1,18 +1,18 @@
 import { StyleSheet, View, ToastAndroid, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { COLORS, FSTYLES, SIZES, STYLES, } from "../constants/theme";
+import React, {  useState } from "react";
+import { COLORS, SIZES, STYLES, } from "../constants/theme";
 import { useForm } from "react-hook-form";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import FormInput from "../components/FormInput";
 import AppLoader from "../components/AppLoader";
 import { AppView } from "../components";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from "../../firebaseConfig";
-import { NAVIGATION } from "../constants/routes";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, } from 'firebase/auth';
+import { auth, db } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { checkUserLogin, setLoginUser } from "../store/localReducer";
+import { setLoginUser } from "../store/localReducer";
 import { useDispatch } from "react-redux";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const LoginScreen = () => {
   const [loading, setloading] = useState(false)
@@ -30,21 +30,34 @@ const LoginScreen = () => {
     }
   };
   const handleSignIn = async (email, password) => {
+    setloading(true)
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       if (userCredential.user) {
+        const user = userCredential.user;
+        await AsyncStorage.setItem("loggedInUser", JSON.stringify(user))
+        dispatch(setLoginUser(user))
+        const usersCollectionRef = collection(db, "users");
+        const userQuery = query(usersCollectionRef, where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(userQuery);
+        if (querySnapshot.empty) {
+          await addDoc(usersCollectionRef, {
+            userId: user.uid,
+            email: user.email
+          });
+        }
         ToastAndroid.show("Login successfully", ToastAndroid.SHORT);
-        await AsyncStorage.setItem("loggedInUser", JSON.stringify(userCredential.user))
-        dispatch(setLoginUser(userCredential.user))
+        setloading(false)
       }
     } catch (error) {
+      setloading(false)
       ToastAndroid.show("Invalid credentials", ToastAndroid.SHORT);
       console.log('An error occurred:', error);
     }
   };
   const { control, handleSubmit, formState: { errors }, } = useForm({
     defaultValues: {
-      email: "", password: ""
+      email: '', password: ''
     },
   });
   const onSubmit = async (data) => {
@@ -98,6 +111,7 @@ const LoginScreen = () => {
               rules={rules}
               placeholder={"password"}
               name="password"
+              secureTextEntry={true}
             />
           </View>
           <TouchableOpacity onPress={() => setregister(true)}>
