@@ -20,6 +20,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setLoginUser } from "../store/localReducer";
+import AppSearchBar from "../components/AppSearchBar";
 
 
 const Discover = ({ navigation }) => {
@@ -27,14 +28,11 @@ const Discover = ({ navigation }) => {
   const { user } = useSelector((state) => state.entities.localReducer);
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
-  const [bl_lat, setBl_lat] = useState(null);
-  const [bl_lng, setBl_lng] = useState(null);
-  const [tr_lat, setTr_lat] = useState(null);
-  const [tr_lng, setTr_lng] = useState(null);
+  const [query, setquery] = useState("");
   async function getPlacesDataFunc() {
     try {
       setIsLoading(true);
-      const data = await getPlacesData(bl_lat, bl_lng, tr_lat, tr_lng, type)
+      const data = [{"address": "MG Road, Bengaluru India", "awards": [], "bearing": "northwest", "booking": {"provider": "Viator", "url": "https://www.tripadvisor.com/Commerce?url=https%3A%2F%2Fwww.viator.com%2Ftours%2FBangalore%2FPrivate-Full-Day-Tour-of-Bangalore-City%2Fd5310-34682P13%3Feap%3Dmobile-app-11383%26aid%3Dtripenandr&partnerKey=1&urlKey=b4d414647ba194647&logme=true&uidparam=refid&attrc=true&Provider=Viator&area=TOP&slot=1&cnt=1&geo=2587630&clt=TM&from=api&nt=true"}, "category": {"key": "attraction", "name": "Attraction"}, "description": "Cubbon Park dons many hats: a green lung in the heart of the city that also hosts a library, museums, a tennis academy, an aquarium, a toy train and many statues and pavilions. It’s probably one of the only parks to have a busy road cutting through it. In the wee hours of the morning or evenings, it paradise. Spring adds to the beauty of this park, with the lovely and colorful Tabebuia trees in full bloom.", "distance": "4.644140379108656", "distance_string": "4.6 km", "doubleclick_zone": "as.india.karnataka.bangalore", "is_candidate_for_contact_info_suppression": false, "is_closed": false, "is_jfy_enabled": false, "is_long_closed": false, "latitude": "12.97669", "location_id": "2587630", "location_string": "Bengaluru, Bangalore District, Karnataka", "location_subtype": "none", "longitude": "77.595", "name": "Cubbon Park", "nearest_metro_station": [], "num_reviews": "2499", "offer_group": {"has_see_all_url": true, "is_eligible_for_ap_list": true, "lowest_price": "$5.99"}, "parent_display_name": "Bengaluru", "phone": "+91 98101 15661", "photo": {"caption": "Excellent for morning jog.", "helpful_votes": "12", "id": "316183883",  "is_blessed": false, "published_date": "2018-05-04T10:15:09-0400", "uploaded_date": "2018-05-04T10:15:09-0400"}, "preferred_map_engine": "default", "ranking": "#21 of 399 things to do in Bengaluru", "ranking_category": "attraction", "ranking_denominator": "399", "ranking_geo": "Bengaluru", "ranking_geo_id": "297628", "ranking_position": "21", "ranking_subcategory": "#21 of 399 things to do in Bengaluru", "rating": "4.0", "raw_ranking": "3.8148915767669678", "ride_providers": ["olaCabs"], "subcategory_ranking": "#21 of 399 things to do in Bengaluru", "timezone": "Asia/Kolkata", "write_review": "https://www.tripadvisor.com/UserReview-g297628-d2587630-Cubbon_Park-Bengaluru_Bangalore_District_Karnataka.html"}]
       setMainData(data);
       setIsLoading(false);
     } catch (error) {
@@ -45,7 +43,7 @@ const Discover = ({ navigation }) => {
   const dispatch = useDispatch()
   useEffect(() => {
     getPlacesDataFunc()
-  }, [bl_lat, bl_lng, tr_lat, tr_lng, type]);
+  }, [type]);
   const auth = getAuth();
   const logoutFunc = () => {
     signOut(auth).then( async() => {
@@ -77,22 +75,11 @@ const Discover = ({ navigation }) => {
         </View>
       </View>
 
-      <View className="flex-row items-center  p-1 bg-white mx-4 rounded-xl px-4 shadow-lg mt-4">
-        <GooglePlacesAutocomplete
-          GooglePlacesDetailsQuery={{ fields: "geometry" }}
-          placeholder="Search"
-          fetchDetails={true}
-          onPress={(data, details = null) => {
-            console.log(details?.geometry?.viewport);
-            setBl_lat(details?.geometry?.viewport?.southwest?.lat);
-            setBl_lng(details?.geometry?.viewport?.southwest?.lng);
-            setTr_lat(details?.geometry?.viewport?.northeast?.lat);
-            setTr_lng(details?.geometry?.viewport?.northeast?.lng);
-          }}
-          query={{
-            key: "AIzaSyDVEs9DA2zQovp01wwOzQGSX8oiBCuOrO8",
-            language: "en",
-          }}
+      <View className="mx-4">
+      <AppSearchBar
+          onChangeSearch={(text) => setquery(text)}
+          searchQuery={query}
+          placeholder={"Search by Name or Place"}
         />
       </View>
 
@@ -104,23 +91,15 @@ const Discover = ({ navigation }) => {
           <View className=" flex-row items-center justify-between px-8 mt-8">
             <MenuContainer
               key={"hotels"}
-              title="Hotels"
+              title="Rooms"
               imageSrc={Hotels}
               type={type}
               setType={setType}
             />
 
             <MenuContainer
-              key={"attractions"}
-              title="Attractions"
-              imageSrc={Attractions}
-              type={type}
-              setType={setType}
-            />
-
-            <MenuContainer
               key={"restaurants"}
-              title="Restaurants"
+              title="Tiffin Service"
               imageSrc={Restaurants}
               type={type}
               setType={setType}
@@ -132,16 +111,6 @@ const Discover = ({ navigation }) => {
               <Text className="text-[#2C7379] text-[20px] font-bold">
                 Top Tips
               </Text>
-              <TouchableOpacity className="flex-row items-center justify-center space-x-2">
-                <Text className="text-[#A0C4C7] text-[15px] font-bold">
-                  Explore
-                </Text>
-                <FontAwesome
-                  name="long-arrow-right"
-                  size={24}
-                  color="#A0C4C7"
-                />
-              </TouchableOpacity>
             </View>
 
             <View className="px-4 mt-8 flex-row items-center justify-evenly flex-wrap">

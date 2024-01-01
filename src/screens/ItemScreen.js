@@ -6,16 +6,15 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome, FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { AppButton, AppText } from "../components";
-import { NAVIGATION } from "../constants/routes";
 
 const ItemScreen = ({ route }) => {
   const navigation = useNavigation();
   const data = route?.params?.param;
-
+ const [liked, setliked] = useState(false)
 
   return (
     <SafeAreaView className="flex-1 bg-white relative py-10">
@@ -30,7 +29,7 @@ const ItemScreen = ({ route }) => {
             className="w-full h-72 object-cover rounded-2xl"
           />
 
-          <View className="absolute flex-row inset-x-0 top-5 justify-between px-6">
+          <View className="absolute flex-row inset-x-0 top-5 justify-between px-3">
             <TouchableOpacity
               onPress={() => navigation.navigate("Discover")}
               className="w-10 h-10 rounded-md items-center justify-center bg-white"
@@ -38,8 +37,8 @@ const ItemScreen = ({ route }) => {
               <FontAwesome5 name="chevron-left" size={24} color="#06B2BE" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="w-10 h-10 rounded-md items-center justify-center bg-[#06B2BE]">
-              <FontAwesome5 name="heartbeat" size={24} color="#fff" />
+            <TouchableOpacity onPress={()=>setliked(!liked)} className="w-10 h-10 rounded-md items-center justify-center bg-[#06B2BE]">
+            <AntDesign name={liked?"heart":"hearto"} size={24} color="white" />
             </TouchableOpacity>
           </View>
 
@@ -96,44 +95,12 @@ const ItemScreen = ({ route }) => {
             </View>
           )}
 
-          {data?.bearing && (
-            <View className=" flex-row items-center space-x-2">
-              <View className="w-12 h-12 rounded-2xl bg-red-100 items-center justify-center shadow-md">
-                <FontAwesome5 name="map-signs" size={24} color="black" />
-              </View>
-              <View>
-                <Text className="text-[#515151] capitalize">
-                  {data?.bearing}
-                </Text>
-                <Text className="text-[#515151]">Bearing</Text>
-              </View>
-            </View>
-          )}
         </View>
-
-        <TouchableOpacity onPress={() => navigation.navigate(NAVIGATION.ITINERARY, { data })} 
-        className='flex-row items-center self-end my-2 justify-center'>
-          <AppText className="text-[#428288] text-[18px] font-bold right-1">Create Itinerary</AppText>
-          <Ionicons name="create" size={24} color="black" />
-        </TouchableOpacity>
 
         {data?.description && (
           <Text className=" tracking-wide text-[16px] font-semibold text-[#97A6AF]">
             {data?.description}
           </Text>
-        )}
-
-        {data?.cuisine && (
-          <View className="flex-row gap-2 items-center justify-start flex-wrap mt-4">
-            {data?.cuisine.map((n) => (
-              <TouchableOpacity
-                key={n.key}
-                className="px-2 py-1 rounded-md bg-emerald-100"
-              >
-                <Text>{n.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
         )}
 
         <View className=" space-y-2 mt-4 bg-gray-100 rounded-2xl px-4 py-2">
