@@ -4,11 +4,15 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NAVIGATION } from "../constants/routes";
 
-const ItemCarDontainer = ({ imageSrc, title, location, data }) => {
+const ItemCarDontainer = ({ imageSrc, title, location, data ,func}) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate(NAVIGATION.ITEMSCREEN, { param: data })}
+      onPress={() => {
+        func("")
+        navigation.navigate(NAVIGATION.ITEMSCREEN, { param: data })
+      }
+      }
       className="rounded-md border border-gray-300 space-y-2 px-3 py-2 shadow-md bg-white w-[182px] my-2"
     >
       <Image

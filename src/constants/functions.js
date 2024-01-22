@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { checkUserLogin } from '../store/localReducer';
 import axios from 'axios';
+import { ToastAndroid } from 'react-native';
 
 export const logoutUser = async (dispatch) => {
     try {
@@ -28,15 +29,6 @@ export const truncateString = (inputString, maxLength) => {
     }
     return inputString;
 };
-export const ensureMinimumLength = (inputString, minLength) => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    while (inputString.length < minLength) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        const randomChar = characters.charAt(randomIndex);
-        inputString += randomChar;
-    }
-    return inputString;
-}
 export const formatDate = (timestamp) => {
     // Parse the ISO 8601 timestamp string
     const date = new Date(timestamp);
@@ -67,20 +59,9 @@ export const formatDate = (timestamp) => {
     return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
   };
   
-export const sanitizeJsonString = (jsonString) => {
-    // Remove any characters that are not part of a valid JSON format
-    const sanitizedString = jsonString.replace(/[^\x20-\x7E]/g, '');
-
-    return sanitizedString;
-}
-export const validatePAN = (Pan) => {
-    const PAN_Card_No = Pan.toUpperCase();
-    const regex = /([A-Z]){5}([0-9]){4}([A-Z]){1}$/;
-    if (PAN_Card_No.length == 10) {
-        return regex.test(PAN_Card_No);
-    }
-}
-
+export function showToast(msg) {
+    ToastAndroid.show(msg, ToastAndroid.SHORT);
+  }
 
 //api calls
 

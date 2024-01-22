@@ -6,7 +6,7 @@ import { NAVIGATION } from '../constants/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoginUser, } from '../store/localReducer';
 
-import { LoginScreen, Discover, HomeScreen, ItemScreen, CreateItinerary, } from '../screens';
+import { LoginScreen, Discover, HomeScreen, ItemScreen, CreateItinerary, SignUpScreen, ProfileScreen, } from '../screens';
 const Stack = createNativeStackNavigator();
 
 
@@ -32,13 +32,17 @@ function AppNavigator() {
     return (
         <Stack.Navigator>
             {user === null ?
+            <>
                 <Stack.Screen options={options} name={NAVIGATION.LOGIN} component={LoginScreen} />
+                <Stack.Screen options={options} name={NAVIGATION.SIGN_UP} component={SignUpScreen} />
+            </>
                 :
                 <>
                     <Stack.Screen options={options} name={NAVIGATION.HOME} component={HomeScreen} />
                     <Stack.Screen options={options} name={NAVIGATION.DISCOVER} component={Discover} />
                     <Stack.Screen options={options} name={NAVIGATION.ITEMSCREEN} component={ItemScreen} />
                     <Stack.Screen options={options} name={NAVIGATION.ITINERARY} component={CreateItinerary} />
+                    <Stack.Screen options={options} name={NAVIGATION.PROFILE} component={ProfileScreen} />
                 </>
             }
         </Stack.Navigator>
