@@ -1,16 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { checkUserLogin } from '../store/localReducer';
+import {  setLoginUser } from '../store/localReducer';
 import axios from 'axios';
 import { ToastAndroid } from 'react-native';
-
+import { doc, updateDoc } from 'firebase/firestore';
+import { FIRESTORE_COLLECTIONS } from "./routes";
+import { db } from "../../firebaseConfig";
 export const logoutUser = async (dispatch) => {
     try {
-        dispatch(checkUserLogin('false'))
-        await AsyncStorage.removeItem("userLoggedIn")
-        await AsyncStorage.removeItem("publicKey")
-        // await AsyncStorage.clear()
+      ToastAndroid.show("Logout successfully", ToastAndroid.SHORT);
+      await AsyncStorage.removeItem("loggedInUser");
+      dispatch(setLoginUser(null));
     } catch (error) {
-        console.log(error)
+      showToast("Logout failed");
     }
 }
 
@@ -66,18 +67,15 @@ export function showToast(msg) {
 //api calls
 
 
-export const apiCallsBA = async (Action, Data, Other_Parameter) => {
+export const updateUser = async (fdata, dispatch) => {
     try {
-        const url = `http://baapi.inland.in/V1/BAAPI.svc/BAAPI`
-        const data = {
-            Action,
-            Data,
-            Other_Parameter
-        };
-        const datas = await axios.post(url, data)
-        return datas.data
+      const postRef = doc(db, FIRESTORE_COLLECTIONS.USERS, fdata.id);
+      await updateDoc(postRef, fdata).then(async () => {
+        await AsyncStorage.setItem("loggedInUser", JSON.stringify(fdata));
+        dispatch(setLoginUser(fdata));
+      });
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-}
+  };
 

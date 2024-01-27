@@ -1,73 +1,92 @@
-import { StyleSheet, Image, View,ScrollView } from 'react-native'
-import React from 'react'
-import { AppButton, AppHeader, AppText, AppTextInput, AppView } from '../components'
-
-import { COLORS, SIZES } from "../constants/theme";
+import { StyleSheet, Image, View, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
 import { Avatar } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppButton, AppHeader, AppText, AppTextInput, AppView } from '../components';
+import { SIZES } from "../constants/theme";
+import { logoutUser, updateUser } from '../constants/functions';
+
 const ProfileScreen = () => {
   const { user } = useSelector((state) => state.entities.localReducer);
- 
-  const handleSubmit=()=>{
+  const [input, setinput] = useState({
+    firstName: user.firstName || '',
+    lastName: user.lastName || '',
+    email: user.email || '',
+    mobile: user.mobile || '',
+ });
+const dispatch = useDispatch()
+  const handleSubmit = async() => {
+    try {
+      const data = {...user,...input}
+    await  updateUser(data,dispatch)
+    } catch (error) {
+      console.log(error)
+    }
+  };
 
-  }
   return (
     <>
-    <AppHeader header={'Profile'}/>
+      <AppHeader header={'Profile'} />
     <AppView>
-      {
-        user.profilePic?
-        <Avatar.Image size={SIZES.height*.1} source={{uri:user.profilePic}} />:
-        <Avatar.Icon size={SIZES.height*.1} icon="account" />
-      }
-
-    {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-        {/* <Image source={require("../../assets/icon.png")} style={styles.logo} /> */}
-        <View style={styles.inputContainer}>
-          <AppTextInput
-            placeholder={"First name"}
-            name="firstName"
-          />
-          <AppTextInput
-            placeholder={"Last Name"}
-            name="lastName"
-          />
-          <AppTextInput
-            placeholder={"Email"}
-            name="email"
-          />
-          <AppTextInput
-            keyboardType={"numeric"}
-            placeholder={"Enter Mobile Number"}
-            name="mobile"
-            maxLength={10}
-          />
-          <AppTextInput
-          style={styles.inputStyle}
-            placeholder={"Password"}
-            name="password"
-          />
-        </View>
-        <View style={{width:'100%'}}>
-        <AppButton title="Update" onPress={handleSubmit()} />
+      <View style={styles.avatarContainer}>
+        {user.profilePic ? (
+          <Avatar.Image size={SIZES.height * 0.1} source={{ uri: user.profilePic }} />
+        ) : (
+          <Avatar.Icon size={SIZES.height * 0.1} icon="account" />
+        )}
       </View>
-      {/* </ScrollView> */}
-      <AppText>Version: 1.00</AppText>
+      <View style={styles.inputContainer}>
+        <AppTextInput
+          placeholder={"First name"}
+          name="firstName"
+          value={input.firstName}
+          onChangeText={(text) => setinput({ ...input, firstName: text.trim() })}      
+        />
+        <AppTextInput
+          placeholder={"Last Name"}
+          name="lastName"
+          value={input.lastName}
+          onChangeText={(text) => setinput({ ...input, lastName: text.trim() })}        
+        />
+        <AppTextInput
+          placeholder={"Email"}
+          name="email"
+          value={input.email}
+          onChangeText={(text) => setinput({ ...input, email: text.trim() })}          
+        />
+        <AppTextInput
+          keyboardType={"numeric"}
+          placeholder={"Enter Mobile Number"}
+          name="mobile"
+          maxLength={10}
+          value={input.mobile}
+          onChangeText={(text) => setinput({ ...input, mobile: text.trim() })}
+        />
+      </View>
+      <AppButton title="Update" onPress={handleSubmit} />
+      <AppText size={1}>Version: 1.0.0</AppText>
+      <TouchableOpacity onPress={()=>logoutUser(dispatch)}>
+      <AppText>Logout</AppText>
+      </TouchableOpacity>
     </AppView>
     </>
-  )
-}
+  );
+};
 
-export default ProfileScreen
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    flex:1,
-    width:'100%',
-    marginVertical: SIZES.padding * 2,
-    justifyContent:'space-around'
+  avatarContainer: {
+    alignItems: 'center',
+    marginVertical: SIZES.padding,
   },
-  inputStyle:{
-width:'100%'
-  }
-})
+  inputContainer: {
+    flex: 1,
+    width: '100%',
+    marginVertical: SIZES.padding * 2,
+    justifyContent: 'space-around',
+  },
+  inputStyle: {
+    width: '100%',
+  },
+});

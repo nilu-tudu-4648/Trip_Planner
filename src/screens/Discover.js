@@ -14,13 +14,9 @@ import MenuContainer from "../components/MenuContainer";
 import ItemCarDontainer from "../components/ItemCarDontainer";
 import { roomsData } from "../constants/data";
 import { AppLoader, AppText } from "../components";
-import { useDispatch, useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setLoginUser } from "../store/localReducer";
+import {  useSelector } from "react-redux";
 import AppSearchBar from "../components/AppSearchBar";
-import { showToast } from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
-
 
 const Discover = ({ navigation }) => {
   const [type, setType] = useState("attractions");
@@ -53,38 +49,32 @@ const Discover = ({ navigation }) => {
     return mainData.filter(
       (data) =>
         data.name.toLowerCase().includes(query.toLowerCase()) ||
-        data.location_string.toLowerCase().includes(query.toLowerCase())
+        data.address.toLowerCase().includes(query.toLowerCase())
     );
   };
 
   const filteredData = filterData();
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     getPlacesDataFunc();
   }, [type]);
 
-  const logoutFunc = async () => {
-    try {
-      ToastAndroid.show("Logout successfully", ToastAndroid.SHORT);
-      await AsyncStorage.removeItem("loggedInUser");
-      dispatch(setLoginUser(null));
-    } catch (error) {
-      showToast("Logout failed");
-    }
-  };
+ 
 
   return (
     <SafeAreaView className="flex-1 bg-white relative my-4">
       <View className="flex-row items-center justify-between p-6">
         <View>
-          <Text className="text-[30px] text-[#0B646B] font-bold my-2">Discover</Text>
+          <Text className="text-[30px] text-[#0B646B] font-bold my-2">
+            Discover
+          </Text>
           <Text className="text-[#527283] text-[26px]">the beauty today</Text>
         </View>
         <View>
-          <TouchableOpacity onPress={() => navigation.navigate(NAVIGATION.PROFILE)}
-          className="w-12 h-12 bg-gray-400 rounded-md self-end items-center justify-center shadow-lg">
+          <TouchableOpacity
+            onPress={() => navigation.navigate(NAVIGATION.PROFILE)}
+            className="w-12 h-12 bg-gray-400 rounded-md self-end items-center justify-center shadow-lg"
+          >
             <Image
               source={Avatar}
               className="w-full h-full rounded-md object-cover"
@@ -95,7 +85,7 @@ const Discover = ({ navigation }) => {
       </View>
 
       <View className="mx-4">
-      <AppSearchBar
+        <AppSearchBar
           onChangeSearch={(text) => setQuery(text)}
           searchQuery={query}
           placeholder={"Search by Name or Place"}
@@ -138,13 +128,9 @@ const Discover = ({ navigation }) => {
                   {filteredData.map((data, i) => (
                     <ItemCarDontainer
                       key={i}
-                      imageSrc={
-                        data?.photo?.images?.medium?.url
-                          ? data?.photo?.images?.medium?.url
-                          : "https://cdn.pixabay.com/photo/2015/10/30/12/22/eat-1014025_1280.jpg"
-                      }
+                      imageSrc={data?.images[0]}
                       title={data?.name}
-                      location={data?.location_string}
+                      location={data?.address}
                       data={data}
                       func={setQuery}
                     />
