@@ -4,6 +4,7 @@ export const roomsData= [
     address: "Doranda, Ranchi, Jharkhand",
     distance: "3.8",
     rentPrice: "4800",
+    sharingType:"Single/Double",
     rating: "4",
     images: [
       require('../../assets/icons.png'),
@@ -12,7 +13,7 @@ export const roomsData= [
     ],
     distance_string: "3.8 km",
     location_id: "345678",
-    location_string: "Ranchi, Jharkhand",
+    roomFor: "Boys/Girls",
     name: "Serene Apartments",
     nearest_sabjimarket: ["Doranda Market", "Big Bazaar"],
     phone: "+91 98765 12345",
@@ -26,6 +27,7 @@ export const roomsData= [
     address: "Harmu, Ranchi, Jharkhand",
     distance: "4.5",
     rentPrice: "5200",
+    sharingType:"Single/Double",
     rating: "3",
     images: [
       require('../../assets/icons.png'),
@@ -34,7 +36,7 @@ export const roomsData= [
     ],
     distance_string: "4.5 km",
     location_id: "789012",
-    location_string: "Ranchi, Jharkhand",
+    roomFor: "Boys/Girls",
     name: "Tranquil Living",
     nearest_sabjimarket: ["Harmu Market"],
     phone: "+91 98765 67899",
@@ -47,7 +49,7 @@ export const roomsData= [
   {
     address: "Kokar, Ranchi, Jharkhand",
     distance: "5.5",
-    rentPrice: "5500",
+    rentPrice: "5500", sharingType:"Single/Double/Triple",
     rating: "4",
     images: [
       require('../../assets/icons.png'),
@@ -56,7 +58,7 @@ export const roomsData= [
     ],
     distance_string: "5.5 km",
     location_id: "567890",
-    location_string: "Ranchi, Jharkhand",
+    roomFor: "Boys/Girls",
     name: "Green View Residency",
     nearest_sabjimarket: ["Kokar Market", "Reliance Fresh"],
     phone: "+91 98765 67891",
@@ -69,7 +71,7 @@ export const roomsData= [
   {
     address: "Hinoo, Ranchi, Jharkhand",
     distance: "6.2",
-    rentPrice: "6000",
+    rentPrice: "6000", sharingType:"Single/Double",
     rating: "4",
     images: [
       require('../../assets/icons.png'),
@@ -78,7 +80,7 @@ export const roomsData= [
     ],
     distance_string: "6.2 km",
     location_id: "901234",
-    location_string: "Ranchi, Jharkhand",
+    roomFor: "Boys",
     name: "Urban Retreat",
     nearest_sabjimarket: ["Hinoo Market", "Spencer’s Hypermarket"],
     phone: "+91 98765 54321",
@@ -91,7 +93,7 @@ export const roomsData= [
   {
     address: "Ratu Road, Ranchi, Jharkhand",
     distance: "8.0",
-    rentPrice: "4800",
+    rentPrice: "4800", sharingType:"Single",
     rating: "3",
     images: [
       require('../../assets/icons.png'),
@@ -100,7 +102,7 @@ export const roomsData= [
     ],
     distance_string: "8.0 km",
     location_id: "345678",
-    location_string: "Ranchi, Jharkhand",
+    roomFor: "Boys/Girls",
     name: "Pleasant Stay Apartments",
     nearest_sabjimarket: ["Ratu Road Market", "Big Bazaar"],
     phone: "+91 98765 67891",
@@ -112,7 +114,7 @@ export const roomsData= [
   },  {
     address: "Kadru, Ranchi, Jharkhand",
     distance: "7.5",
-    rentPrice: "5500",
+    rentPrice: "5500", sharingType:"Double",
     rating: "4",
     images: [
       require('../../assets/icons.png'),
@@ -121,7 +123,7 @@ export const roomsData= [
     ],
     distance_string: "7.5 km",
     location_id: "567890",
-    location_string: "Ranchi, Jharkhand",
+    roomFor: "Girls",
     name: "Elegant Homes",
     nearest_sabjimarket: ["Kadru Market", "Reliance Fresh"],
     phone: "+91 98765 12345",

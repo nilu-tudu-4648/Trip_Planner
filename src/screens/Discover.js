@@ -5,21 +5,20 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Avatar, Hotels, NotFound, Restaurants } from "../../assets";
+import { Avatar, Hotels, NotFound, Restaurants,ComingSoon } from "../../assets";
 import MenuContainer from "../components/MenuContainer";
 
 import ItemCarDontainer from "../components/ItemCarDontainer";
 import { roomsData } from "../constants/data";
 import { AppLoader, AppText } from "../components";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import AppSearchBar from "../components/AppSearchBar";
 import { NAVIGATION } from "../constants/routes";
 
 const Discover = ({ navigation }) => {
-  const [type, setType] = useState("attractions");
+  const [type, setType] = useState("rooms");
   const { user } = useSelector((state) => state.entities.localReducer);
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
@@ -58,17 +57,14 @@ const Discover = ({ navigation }) => {
   useEffect(() => {
     getPlacesDataFunc();
   }, [type]);
-
- 
-
   return (
     <SafeAreaView className="flex-1 bg-white relative my-4">
       <View className="flex-row items-center justify-between p-6">
         <View>
           <Text className="text-[30px] text-[#0B646B] font-bold my-2">
-            Discover
+            Hey {user.firstName}
           </Text>
-          <Text className="text-[#527283] text-[26px]">the beauty today</Text>
+          <Text className="text-[#527283] text-[26px]">Search the room</Text>
         </View>
         <View>
           <TouchableOpacity
@@ -76,15 +72,14 @@ const Discover = ({ navigation }) => {
             className="w-12 h-12 bg-gray-400 rounded-md self-end items-center justify-center shadow-lg"
           >
             <Image
-              source={Avatar}
+              source={user.profilePic? {uri:user.profilePic} : Avatar}
               className="w-full h-full rounded-md object-cover"
             />
           </TouchableOpacity>
-          <AppText size={1}>{user.email}</AppText>
         </View>
       </View>
 
-      <View className="mx-4">
+      <View className="mx-2">
         <AppSearchBar
           onChangeSearch={(text) => setQuery(text)}
           searchQuery={query}
@@ -97,7 +92,7 @@ const Discover = ({ navigation }) => {
         <AppLoader loading={isLoading} />
       ) : (
         <ScrollView>
-          <View className=" flex-row items-center justify-between px-8 mt-8">
+          <View className=" flex-row items-center justify-between px-6 mt-2">
             <MenuContainer
               key={"hotels"}
               title="Rooms"
@@ -114,30 +109,29 @@ const Discover = ({ navigation }) => {
               setType={setType}
             />
           </View>
+          {type === "rooms" ? (
+            <View>
+              <View className="flex-row items-center justify-between px-4 mt-8">
+                <Text className="text-[#2C7379] text-[20px] font-bold">
+                  Popular Rooms
+                </Text>
+              </View>
 
-          <View>
-            <View className="flex-row items-center justify-between px-4 mt-8">
-              <Text className="text-[#2C7379] text-[20px] font-bold">
-                Top Picks
-              </Text>
-            </View>
-
-            <View className="px-4 mt-8 flex-row items-center justify-evenly flex-wrap">
-              {filteredData.length > 0 ? (
-                <>
-                  {filteredData.map((data, i) => (
-                    <ItemCarDontainer
-                      key={i}
-                      imageSrc={data?.images[0]}
-                      title={data?.name}
-                      location={data?.address}
-                      data={data}
-                      func={setQuery}
-                    />
-                  ))}
-                </>
-              ) : (
-                <>
+              <View className="px-1 mt-8 flex-row items-center justify-evenly flex-wrap">
+                {filteredData.length > 0 ? (
+                  <>
+                    {filteredData.map((data, i) => (
+                      <ItemCarDontainer
+                        key={i}
+                        imageSrc={data?.images[0]}
+                        title={data?.name}
+                        location={data?.address}
+                        data={data}
+                        func={setQuery}
+                      />
+                    ))}
+                  </>
+                ) : (
                   <View className="w-full h-[400px] items-center space-y-8 justify-center">
                     <Image
                       source={NotFound}
@@ -147,10 +141,17 @@ const Discover = ({ navigation }) => {
                       Opps...No Data Found
                     </Text>
                   </View>
-                </>
-              )}
+                )}
+              </View>
             </View>
-          </View>
+          ) : (
+            <View className="w-full h-[400px] items-center space-y-8 justify-center">
+              <Image source={ComingSoon} className=" w-32 h-32 object-cover" />
+              <Text className="text-1xl text-[#428288] font-semibold">
+                Coming Soon
+              </Text>
+            </View>
+          )}
         </ScrollView>
       )}
     </SafeAreaView>

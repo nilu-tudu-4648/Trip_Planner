@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   BackHandler,
 } from "react-native";
-import { FontAwesome, FontAwesome5, AntDesign } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5, AntDesign,MaterialCommunityIcons  } from "@expo/vector-icons";
 import { AppButton } from "../components";
 import Carousel from "react-native-reanimated-carousel";
 import { SIZES } from "../constants/theme";
@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
 import { useNavigation } from "@react-navigation/native";
-
+import { Chip } from 'react-native-paper';
 const ItemScreen = ({ route }) => {
   const { user } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
@@ -111,7 +111,7 @@ const ItemScreen = ({ route }) => {
           <View className="flex-row items-center space-x-2 mt-2">
             <FontAwesome name="map-marker" size={25} color="#8C9EA6" />
             <Text className="text-[#8C9EA6] text-[18px] font-bold">
-              {data?.location_string}
+              {data?.address}
             </Text>
           </View>
         </View>
@@ -124,11 +124,12 @@ const ItemScreen = ({ route }) => {
                 <FontAwesome name="star" size={24} color="#D58574" />
               </View>
               <View>
-                <Text className="text-[#515151]">{data?.rating}</Text>
-                <Text className="text-[#515151]">Ratings</Text>
+                <Text className="text-[#515151] font-bold">{data?.rating}</Text>
+                <Text className="text-[#515151] font-bold">Ratings</Text>
               </View>
             </View>
           )}
+       {/* <Chip onPress={() => console.log('Pressed')}>Example Chip</Chip> */}
 
           {/* Rent Price Section */}
           {data.rentPrice && (
@@ -137,8 +138,8 @@ const ItemScreen = ({ route }) => {
                 <Text className="text-[#D58574] text-[18px] ">₹</Text>
               </View>
               <View>
-                <Text className="text-[#515151]">{data?.rentPrice}</Text>
-                <Text className="text-[#515151]">Rent</Text>
+                <Text className="text-[#515151] font-bold">{data?.rentPrice}</Text>
+                <Text className="text-[#515151] font-bold">Rent</Text>
               </View>
             </View>
           )}
@@ -153,11 +154,16 @@ const ItemScreen = ({ route }) => {
 
         {/* Additional Details Section */}
         <View className="space-y-2 mt-4 bg-gray-100 rounded-2xl px-4 py-2">
-          {/* Phone */}
-          {data?.phone && (
+          {data?.sharingType && (
             <View className="items-center flex-row space-x-6">
-              <FontAwesome name="phone" size={24} color="#428288" />
-              <Text className="text-lg">{data?.phone}</Text>
+            <MaterialCommunityIcons name="gender-male" size={24} color="#428288" />
+              <Text className="text-lg">{data?.roomFor}</Text>
+            </View>
+          )}
+          {data?.sharingType && (
+            <View className="items-center flex-row space-x-6">
+            <FontAwesome name="users" size={24} color="#428288" />
+              <Text className="text-lg">{data?.sharingType}</Text>
             </View>
           )}
 
@@ -169,21 +175,13 @@ const ItemScreen = ({ route }) => {
             </View>
           )}
 
-          {/* Address */}
-          {data?.address && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome name="map-pin" size={24} color="#428288" />
-              <Text className="text-lg">{data?.address}</Text>
-            </View>
-          )}
-
           {/* Amenities */}
           {data?.amenities && data.amenities.length > 0 && (
             <View className="items-center flex-row space-x-6">
               <FontAwesome5 name="tasks" size={24} color="#428288" />
               <View>
-                <Text className="text-lg">Amenities</Text>
-                <Text className="text-[#515151]">
+                {/* <Text className="text-lg">Amenities</Text> */}
+                <Text className="text-lg">
                   {data?.amenities.join(", ")}
                 </Text>
               </View>

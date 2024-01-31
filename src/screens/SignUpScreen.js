@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image,ScrollView } from "react-native";
+import { StyleSheet, View, Image,ScrollView, BackHandler } from "react-native";
 import React, { useState } from "react";
 import { COLORS, SIZES } from "../constants/theme";
 import { useForm } from "react-hook-form";
@@ -107,7 +107,14 @@ const SignUpScreen = ({ navigation }) => {
   };
   const phonePattern = /^[6-9][0-9]{9}$/;
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
+  BackHandler.addEventListener(
+    "hardwareBackPress",
+    () => {
+      navigation.navigate(NAVIGATION.LOGIN);
+      return () => true;
+    },
+    []
+  );
   return (
     <View style={styles.container}>
       <AppLoader loading={loading} />

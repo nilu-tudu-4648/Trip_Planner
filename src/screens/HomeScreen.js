@@ -15,14 +15,9 @@ const HomeScreen = ({navigation}) => {
     <SafeAreaView className="bg-white flex-1 relative">
       {/* Second Section */}
       <View className="px-6 mt-8 space-y-3">
-        <Text className="text-[#3C6072] text-[42px]">Come and stay with us</Text>
-        <Text className="text-[#00BCC9] text-[38px] font-bold">
-          Good Moments
-        </Text>
-
-        <Text className="text-[#3C6072] text-base">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti odio
-          quis nostrum
+        <Text className="text-[#3C6072] text-[42px]">Hey Buddy! welcome to</Text>
+        <Text className="text-[#00BCC9] text-[30px] font-bold">
+          Ranchi ka apna Room Booking Platform
         </Text>
       </View>
 

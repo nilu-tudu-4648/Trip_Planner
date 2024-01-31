@@ -3,6 +3,12 @@ import {  setLoginUser } from '../store/localReducer';
 import axios from 'axios';
 import { ToastAndroid } from 'react-native';
 import { doc, updateDoc } from 'firebase/firestore';
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { FIRESTORE_COLLECTIONS } from "./routes";
 import { db } from "../../firebaseConfig";
 export const logoutUser = async (dispatch) => {
@@ -78,4 +84,45 @@ export const updateUser = async (fdata, dispatch) => {
       console.log(error);
     }
   };
-
+  export const saveMediaToStorage = async (file, path) => {
+    try {
+      const storage = getStorage();
+      const response = await fetch(file);
+      const blob = await response.blob();
+      const storageRef = ref(storage, path);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      const url = await new Promise((res, rej) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            console.log(error);
+            showToast("upload Failed");
+            rej(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              res(downloadURL);
+            });
+          }
+        );
+      });
+      return url; // Return the download URL
+    } catch (error) {
+      console.log(error);
+      throw error; // Rethrow the error for handling in your app
+    }
+  };
