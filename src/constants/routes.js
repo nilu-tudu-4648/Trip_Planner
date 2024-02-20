@@ -7,10 +7,8 @@ export const NAVIGATION = {
   ITEMSCREEN: "ItemScreen",
   ITINERARY: "CreateItinerary",
   SIGN_UP: "SignUp",
-  prod: {
-    url: `http://baapi.inland.in/V1/BAAPI.svc/BAAPI`, // prod
-  },
+  //admin
+  ADMIN_HOME:"AdminHome",
+  CREATE_ROOM:"CreateRoom"
 };
-export const FIRESTORE_COLLECTIONS ={
-  USERS:'users'
-}
+

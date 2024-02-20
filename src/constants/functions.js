@@ -9,7 +9,7 @@ import {
   getDownloadURL,
   uploadBytesResumable,
 } from "firebase/storage";
-import { FIRESTORE_COLLECTIONS } from "./routes";
+import { FIRESTORE_COLLECTIONS } from "./data";
 import { db } from "../../firebaseConfig";
 export const logoutUser = async (dispatch) => {
     try {

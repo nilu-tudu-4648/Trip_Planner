@@ -134,4 +134,9 @@ export const roomsData= [
     distanceFromPetrolPump: 3.8 // in kilometers
   },
       ];
+
+      export const FIRESTORE_COLLECTIONS ={
+        All_ROOMS:"allRooms",
+        USERS:'users'
+      }
       

@@ -12,7 +12,7 @@ import MenuContainer from "../components/MenuContainer";
 
 import ItemCarDontainer from "../components/ItemCarDontainer";
 import { roomsData } from "../constants/data";
-import { AppLoader, AppText } from "../components";
+import { AppLoader } from "../components";
 import { useSelector } from "react-redux";
 import AppSearchBar from "../components/AppSearchBar";
 import { NAVIGATION } from "../constants/routes";
@@ -64,7 +64,7 @@ const Discover = ({ navigation }) => {
           <Text className="text-[30px] text-[#0B646B] font-bold my-2">
             Hey {user.firstName}
           </Text>
-          <Text className="text-[#527283] text-[26px]">Search the room</Text>
+          <Text className="text-[#527283] text-[26px]">Book hostels and Rooms</Text>
         </View>
         <View>
           <TouchableOpacity

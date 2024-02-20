@@ -17,7 +17,7 @@ import {
   where,
 } from "firebase/firestore";
 import { NAVIGATION } from "../constants/routes";
-import { FIRESTORE_COLLECTIONS } from "../constants/routes";
+import { FIRESTORE_COLLECTIONS } from "../constants/data";
 import { showToast } from "../constants/functions";
 const SignUpScreen = ({ navigation }) => {
   const [loading, setloading] = useState(false);

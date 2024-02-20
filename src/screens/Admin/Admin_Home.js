@@ -1,8 +1,8 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { AppText, AppView, HomeHeader } from "../../components";
 import { dashboardCards } from "../../constants/data";
 import { COLORS, SIZES, STYLES } from "../../constants/theme";
+import { AppText, AppView, HomeHeader } from "../../components";
 const Admin_Home = ({ navigation }) => {
   return (
     <>

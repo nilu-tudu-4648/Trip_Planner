@@ -17,7 +17,7 @@ import { NAVIGATION } from "../constants/routes";
 import { useDispatch } from "react-redux";
 import { setLoginUser } from "../store/localReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FIRESTORE_COLLECTIONS } from "../constants/routes";
+import { FIRESTORE_COLLECTIONS } from "../constants/data";
 import { showToast } from "../constants/functions";
 import { TouchableOpacity } from "react-native";
 
