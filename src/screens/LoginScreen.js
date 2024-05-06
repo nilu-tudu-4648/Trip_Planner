@@ -36,6 +36,7 @@ const LoginScreen = ({ navigation }) => {
   });
   const dispatch = useDispatch();
   async function getUser(mobile, forgot = false) {
+  try {
     const q = query(
       collection(db, FIRESTORE_COLLECTIONS.USERS),
       where("mobile", "==", mobile)
@@ -50,8 +51,15 @@ const LoginScreen = ({ navigation }) => {
       return data;
     }
     // User does not exist
+    showToast('User does not exist');
+    return null;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    // Handle error accordingly, e.g., show error toast
+    showToast('Error fetching user. Please try again later.');
     return null;
   }
+}
   const handleSignIn = async (phone, password) => {
     const userExists = await getUser(phone);
 

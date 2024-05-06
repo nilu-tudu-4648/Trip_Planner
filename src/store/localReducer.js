@@ -4,7 +4,9 @@ const initialState = {
   loader: false,
   user: null,
   userLoggedIn: 'false',
-  allRooms:[]
+  allRooms:[],
+  //admin
+  
 };
 
 const localReducer = createSlice({

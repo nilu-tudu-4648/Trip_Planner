@@ -28,7 +28,6 @@ import {
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 const CreateRoom = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
-  // const [images, setImages] = useState({ roomPic1: "", roomPic2: "" });
   const [text, setText] = useState("");
   const [markettext, setmarketText] = useState("");
   const [amenities, setamenities] = useState([]);
@@ -87,6 +86,7 @@ const CreateRoom = ({ navigation }) => {
       roomFor: "",
       description: "",
       rating: "",
+      distanceFromPetrolPump:""
     },
   });
   const onSubmit = async (data) => {
@@ -98,6 +98,7 @@ const CreateRoom = ({ navigation }) => {
       roomFor,
       description,
       rating,
+      distanceFromPetrolPump
     } = data;
 
     try {
@@ -118,6 +119,7 @@ const CreateRoom = ({ navigation }) => {
         rating,
         amenities,
         nearest_sabjimarket,
+        distanceFromPetrolPump,
         uploaded_date: `${new Date().toString()}`,
       };
 
@@ -133,6 +135,8 @@ const CreateRoom = ({ navigation }) => {
       setValue("roomFor", "");
       setValue("description", "");
       setValue("rating", "");
+      setValue("distanceFromPetrolPump", "");
+      navigation.navigate(NAVIGATION.ADMIN_HOME)
     } catch (error) {
       console.error("Error adding rooms:", error);
       showToast("Something went wrong");
@@ -224,6 +228,13 @@ const CreateRoom = ({ navigation }) => {
             rules={rules}
             placeholder={"Room For"}
             name="roomFor"
+          />
+        </View>
+        <View>
+          <FormInput
+            control={control}
+            placeholder={"Distance from petrol pump"}
+            name="distanceFromPetrolPump"
           />
         </View>
         <View>

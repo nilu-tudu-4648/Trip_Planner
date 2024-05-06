@@ -16,6 +16,7 @@ import {
   ProfileScreen,
 } from "../screens";
 import { Admin_Home, CreateRoom } from "../screens/Admin";
+import AllRoomsScreen from "../screens/Admin/All_Rooms";
 const Stack = createNativeStackNavigator();
 
 function AppNavigator() {
@@ -52,6 +53,16 @@ function AppNavigator() {
             options={options}
             name={NAVIGATION.CREATE_ROOM}
             component={CreateRoom}
+          />
+          <Stack.Screen
+            options={options}
+            name={NAVIGATION.ADMIN_ALL_ROOM}
+            component={AllRoomsScreen}
+          />
+          <Stack.Screen
+            options={options}
+            name={NAVIGATION.PROFILE}
+            component={ProfileScreen}
           />
         </>
       ) : user === null ? (

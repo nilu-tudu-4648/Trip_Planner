@@ -7,15 +7,23 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Avatar, Hotels, NotFound, Restaurants,ComingSoon } from "../../assets";
+import {
+  Avatar,
+  Hotels,
+  NotFound,
+  Restaurants,
+  ComingSoon,
+} from "../../assets";
 import MenuContainer from "../components/MenuContainer";
 
 import ItemCarDontainer from "../components/ItemCarDontainer";
-import { roomsData } from "../constants/data";
+import { FIRESTORE_COLLECTIONS, roomsData } from "../constants/data";
 import { AppLoader } from "../components";
 import { useSelector } from "react-redux";
 import AppSearchBar from "../components/AppSearchBar";
 import { NAVIGATION } from "../constants/routes";
+import { collection, doc, getDocs } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 
 const Discover = ({ navigation }) => {
   const [type, setType] = useState("rooms");
@@ -23,21 +31,30 @@ const Discover = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
   const [query, setQuery] = useState("");
-
-  async function getPlacesDataFunc() {
+  async function geroomsDataFunc() {
     try {
-      setIsLoading(true);
-      // Simulated data, replace with actual data fetching logic
-      const data = [
-        {
-          // ... (unchanged data structure)
-        },
-      ];
-      setMainData(roomsData);
+      setIsLoading(true); // Set loading state to true when fetching data
+
+      const roomsCollectionRef = collection(
+        db,
+        FIRESTORE_COLLECTIONS.All_ROOMS
+      );
+      const querySnapshot = await getDocs(roomsCollectionRef);
+      const rooms = [];
+
+      querySnapshot.forEach((doc) => {
+        // For each document, push its data into the rooms array
+        rooms.push({ id: doc.id, ...doc.data() });
+      });
+
+      // Once all rooms are fetched, update the mainData state with the fetched rooms
+      setMainData(rooms);
+
+      // Set loading state to false after data is fetched
       setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
-      console.log(error);
+      setIsLoading(false); // Ensure loading state is set to false even in case of error
+      console.error("Error fetching rooms:", error);
     }
   }
 
@@ -55,7 +72,7 @@ const Discover = ({ navigation }) => {
   const filteredData = filterData();
 
   useEffect(() => {
-    getPlacesDataFunc();
+    geroomsDataFunc();
   }, [type]);
   return (
     <SafeAreaView className="flex-1 bg-white relative my-4">
@@ -64,7 +81,9 @@ const Discover = ({ navigation }) => {
           <Text className="text-[30px] text-[#0B646B] font-bold my-2">
             Hey {user.firstName}
           </Text>
-          <Text className="text-[#527283] text-[26px]">Book hostels and Rooms</Text>
+          <Text className="text-[#527283] text-[26px]">
+            Book hostels and Rooms
+          </Text>
         </View>
         <View>
           <TouchableOpacity
@@ -72,7 +91,7 @@ const Discover = ({ navigation }) => {
             className="w-12 h-12 bg-gray-400 rounded-md self-end items-center justify-center shadow-lg"
           >
             <Image
-              source={user.profilePic? {uri:user.profilePic} : Avatar}
+              source={user.profilePic ? { uri: user.profilePic } : Avatar}
               className="w-full h-full rounded-md object-cover"
             />
           </TouchableOpacity>
@@ -92,7 +111,7 @@ const Discover = ({ navigation }) => {
         <AppLoader loading={isLoading} />
       ) : (
         <ScrollView>
-          <View className=" flex-row items-center justify-between px-6 mt-2">
+          {/* <View className=" flex-row items-center justify-between px-6 mt-2">
             <MenuContainer
               key={"hotels"}
               title="Rooms"
@@ -108,7 +127,7 @@ const Discover = ({ navigation }) => {
               type={type}
               setType={setType}
             />
-          </View>
+          </View> */}
           {type === "rooms" ? (
             <View>
               <View className="flex-row items-center justify-between px-4 mt-8">
@@ -123,7 +142,7 @@ const Discover = ({ navigation }) => {
                     {filteredData.map((data, i) => (
                       <ItemCarDontainer
                         key={i}
-                        imageSrc={data?.images[0]}
+                        imageSrc={data?.roomPics?.[0] || Hotels} // Assuming roomPics is an array of images
                         title={data?.name}
                         location={data?.address}
                         data={data}

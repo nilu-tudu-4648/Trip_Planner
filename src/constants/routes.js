@@ -9,6 +9,7 @@ export const NAVIGATION = {
   SIGN_UP: "SignUp",
   //admin
   ADMIN_HOME:"AdminHome",
-  CREATE_ROOM:"CreateRoom"
+  CREATE_ROOM:"CreateRoom",
+  ADMIN_ALL_ROOM:"AdminAllRooms"
 };
 

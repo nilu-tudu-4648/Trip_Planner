@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
 import { useNavigation } from "@react-navigation/native";
-import { Chip } from 'react-native-paper';
 const ItemScreen = ({ route }) => {
   const { user } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
@@ -53,7 +52,7 @@ const ItemScreen = ({ route }) => {
     <SafeAreaView className="flex-1 bg-white relative py-10">
       <ScrollView className="flex-1 px-4">
         <View className="relative bg-white shadow-lg">
-          <View>
+         
             <Carousel
               loop
               width={SIZES.width}
@@ -70,13 +69,11 @@ const ItemScreen = ({ route }) => {
                 >
                   <Image
                     source={item}
-                    style={{width:'100%',resizeMode:'cover'}}
+                    style={{width:'100%',resizeMode:'contain'}}
                   />
                 </View>
               )}
             />
-          </View>
-
           <View className="absolute flex-row inset-x-0 top-5 justify-between px-3">
             <TouchableOpacity
               onPress={() => navigation.navigate("Discover")}
