@@ -7,9 +7,6 @@ const AppHeader = ({header}) => {
     const navigation = useNavigation()
     const _goBack = () => navigation.goBack();
 
-    const _handleSearch = () => console.log('Searching');
-  
-    const _handleMore = () => console.log('Shown more');
   return (
     <Appbar.Header>
     <Appbar.BackAction onPress={_goBack} />

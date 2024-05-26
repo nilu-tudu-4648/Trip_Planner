@@ -11,7 +11,6 @@ import {
   Avatar,
   Hotels,
   NotFound,
-  Restaurants,
   ComingSoon,
 } from "../../assets";
 import MenuContainer from "../components/MenuContainer";
@@ -22,7 +21,7 @@ import { AppLoader } from "../components";
 import { useSelector } from "react-redux";
 import AppSearchBar from "../components/AppSearchBar";
 import { NAVIGATION } from "../constants/routes";
-import { collection, doc, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
 const Discover = ({ navigation }) => {
@@ -138,18 +137,21 @@ const Discover = ({ navigation }) => {
 
               <View className="px-1 mt-8 flex-row items-center justify-evenly flex-wrap">
                 {filteredData.length > 0 ? (
-                  <>
-                    {filteredData.map((data, i) => (
-                      <ItemCarDontainer
-                        key={i}
-                        imageSrc={data?.roomPics?.[0] || Hotels} // Assuming roomPics is an array of images
-                        title={data?.name}
-                        location={data?.address}
-                        data={data}
-                        func={setQuery}
-                      />
-                    ))}
-                  </>
+            <>
+            {filteredData.map((data, i) => {
+              const imageUrls = Object.values(data.roomPics).filter(url => url.trim() !== "");
+              return (
+                <ItemCarDontainer
+                  key={i}
+                  imageSrc={imageUrls[0]} 
+                  title={data?.name}
+                  location={data?.address}
+                  data={data}
+                  func={setQuery}
+                />
+              );
+            })}
+          </>
                 ) : (
                   <View className="w-full h-[400px] items-center space-y-8 justify-center">
                     <Image

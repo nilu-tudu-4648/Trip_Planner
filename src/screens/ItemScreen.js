@@ -8,7 +8,12 @@ import {
   TouchableOpacity,
   BackHandler,
 } from "react-native";
-import { FontAwesome, FontAwesome5, AntDesign,MaterialCommunityIcons  } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  FontAwesome5,
+  AntDesign,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { AppButton } from "../components";
 import Carousel from "react-native-reanimated-carousel";
 import { SIZES } from "../constants/theme";
@@ -47,33 +52,34 @@ const ItemScreen = ({ route }) => {
     },
     []
   );
-
+  const imageUrls = Object.values(data.roomPics).filter(
+    (url) => url.trim() !== ""
+  );
   return (
     <SafeAreaView className="flex-1 bg-white relative py-10">
       <ScrollView className="flex-1 px-4">
         <View className="relative bg-white shadow-lg">
-         
-            <Carousel
-              loop
-              width={SIZES.width}
-              height={SIZES.width / 1.2}
-              data={data.images}
-              scrollAnimationDuration={1000}
-              // onSnapToItem={(index) => console.log("current index:", index)}
-              renderItem={({ item, index }) => (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    source={item}
-                    style={{width:'100%',resizeMode:'contain'}}
-                  />
-                </View>
-              )}
-            />
+          <Carousel
+            loop
+            width={SIZES.width}
+            height={SIZES.width / 1.2}
+            data={imageUrls}
+            scrollAnimationDuration={1000}
+            renderItem={({ item, index }) => (
+              <View
+              key={index}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={{ uri: item }}
+                  style={{ width: "100%",height:'100%', resizeMode: "stretch" }}
+                />
+              </View>
+            )}
+          />
           <View className="absolute flex-row inset-x-0 top-5 justify-between px-3">
             <TouchableOpacity
               onPress={() => navigation.navigate("Discover")}
@@ -83,11 +89,13 @@ const ItemScreen = ({ route }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() =>addtoLikedPlace()}
+              onPress={() => addtoLikedPlace()}
               className="w-10 h-10 rounded-md items-center justify-center bg-[#06B2BE]"
             >
               <AntDesign
-                name={user.likedPlaces?.includes(data.name) ? "heart" : "hearto"}
+                name={
+                  user.likedPlaces?.includes(data.name) ? "heart" : "hearto"
+                }
                 size={24}
                 color="white"
               />
@@ -126,7 +134,7 @@ const ItemScreen = ({ route }) => {
               </View>
             </View>
           )}
-       {/* <Chip onPress={() => console.log('Pressed')}>Example Chip</Chip> */}
+          {/* <Chip onPress={() => console.log('Pressed')}>Example Chip</Chip> */}
 
           {/* Rent Price Section */}
           {data.rentPrice && (
@@ -135,7 +143,9 @@ const ItemScreen = ({ route }) => {
                 <Text className="text-[#D58574] text-[18px] ">₹</Text>
               </View>
               <View>
-                <Text className="text-[#515151] font-bold">{data?.rentPrice}</Text>
+                <Text className="text-[#515151] font-bold">
+                  {data?.rentPrice}
+                </Text>
                 <Text className="text-[#515151] font-bold">Rent</Text>
               </View>
             </View>
@@ -153,13 +163,17 @@ const ItemScreen = ({ route }) => {
         <View className="space-y-2 mt-4 bg-gray-100 rounded-2xl px-4 py-2">
           {data?.sharingType && (
             <View className="items-center flex-row space-x-6">
-            <MaterialCommunityIcons name="gender-male" size={24} color="#428288" />
+              <MaterialCommunityIcons
+                name="gender-male"
+                size={24}
+                color="#428288"
+              />
               <Text className="text-lg">{data?.roomFor}</Text>
             </View>
           )}
           {data?.sharingType && (
             <View className="items-center flex-row space-x-6">
-            <FontAwesome name="users" size={24} color="#428288" />
+              <FontAwesome name="users" size={24} color="#428288" />
               <Text className="text-lg">{data?.sharingType}</Text>
             </View>
           )}
@@ -178,9 +192,7 @@ const ItemScreen = ({ route }) => {
               <FontAwesome5 name="tasks" size={24} color="#428288" />
               <View>
                 {/* <Text className="text-lg">Amenities</Text> */}
-                <Text className="text-lg">
-                  {data?.amenities.join(", ")}
-                </Text>
+                <Text className="text-lg">{data?.amenities.join(", ")}</Text>
               </View>
             </View>
           )}

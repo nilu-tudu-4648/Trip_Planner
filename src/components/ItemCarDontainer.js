@@ -18,7 +18,7 @@ const ItemCarDontainer = ({ imageSrc, title, location, data ,func}) => {
       className="rounded-md border border-gray-300 p-2 shadow-md bg-white my-2"
     >
       <Image
-        source={imageSrc}
+        source={{ uri:imageSrc}}
         className="w-full h-40 rounded-md object-contain"
       />
 

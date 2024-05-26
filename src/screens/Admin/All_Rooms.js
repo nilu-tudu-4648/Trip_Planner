@@ -17,8 +17,6 @@ import { Avatar, Chip } from "react-native-paper";
 const AllRoomsScreen = ({ navigation }) => {
   const { allRooms } = useSelector((state) => state.entities.localReducer);
   const [loading, setloading] = useState(true);
-  const [editPlayerVisible, seteditPlayerVisible] = useState(false);
-  const [editPlayerItem, seteditPlayerItem] = useState({});
   const [data, setData] = useState([]);
   const [query, setQuery] = useState(null); // Define query state variable
 
@@ -62,9 +60,8 @@ const AllRoomsScreen = ({ navigation }) => {
     []
   );
 
-  const openDialog = (item) => {
-    seteditPlayerItem(item);
-    seteditPlayerVisible(true);
+  const navigateToEditRoom = (item) => {
+    navigation.navigate(NAVIGATION.CREATE_ROOM,{item})
   };
 
   return (
@@ -106,14 +103,14 @@ const AllRoomsScreen = ({ navigation }) => {
               <View style={{marginVertical:2}}>
                 <AppText size={1.6}>{"amenities"}</AppText>
                 {item.amenities.map((item, i) => (
-                  <Chip key={i}>{item}</Chip>
+                  <Chip style={{marginVertical:1}} key={i}>{item}</Chip>
                 ))}
               </View>
               <View style={{ ...FSTYLES, width: "100%" }}>
                 <AppButton
                   varient={"outlined"}
                   title={"Update"}
-                  onPress={() => openDialog(item)}
+                  onPress={() => navigateToEditRoom(item)}
                   style={{ width: "48%" }}
                 />
                 <AppButton
