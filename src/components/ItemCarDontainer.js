@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, Pressable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -8,18 +8,17 @@ import { SIZES } from "../constants/theme";
 const ItemCarDontainer = ({ imageSrc, title, location, data ,func}) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => {
         func("")
         navigation.navigate(NAVIGATION.ITEMSCREEN, { param: data })
       }
       }
-      style={{width:SIZES.width/2.2}}
-      className="rounded-md border border-gray-300 p-2 shadow-md bg-white my-2"
+      className="rounded-md w-full h-50 border border-gray-300 p-2 shadow-md bg-white my-2"
     >
       <Image
         source={{ uri:imageSrc}}
-        className="w-full h-40 rounded-md object-contain"
+        className="w-full h-40 rounded-md"
       />
 
       {title ? (
@@ -38,7 +37,7 @@ const ItemCarDontainer = ({ imageSrc, title, location, data ,func}) => {
       ) : (
         <></>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

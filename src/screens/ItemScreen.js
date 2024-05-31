@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   BackHandler,
+  Linking,
 } from "react-native";
 import {
   FontAwesome,
@@ -43,7 +44,25 @@ const ItemScreen = ({ route }) => {
       console.log(error);
     }
   };
-
+  const mobileNumber = '9155186701'
+  const initiateWhatsApp = () => {
+    if (mobileNumber.length != 10) {
+      alert('Please insert correct WhatsApp number');
+      return;
+    }
+    const whatsAppMsg = `Hi ,I want this room name:${data.name}`
+    let url =
+      'whatsapp://send?text=' + 
+       whatsAppMsg +
+      '&phone=91' + mobileNumber;
+    Linking.openURL(url)
+      .then((data) => {
+        console.log('WhatsApp Opened');
+      })
+      .catch(() => {
+        alert('Make sure Whatsapp installed on your device');
+      });
+  };
   BackHandler.addEventListener(
     "hardwareBackPress",
     () => {
@@ -198,16 +217,16 @@ const ItemScreen = ({ route }) => {
           )}
 
           {/* Distance from Petrol Pump */}
-          {data?.distanceFromPetrolPump && (
+          {/* {data?.distanceFromPetrolPump && (
             <View className="items-center flex-row space-x-6">
               <FontAwesome name="tachometer" size={24} color="#428288" />
               <Text className="text-lg">
                 {`Distance from Petrol Pump: ${data?.distanceFromPetrolPump} km`}
               </Text>
             </View>
-          )}
+          )} */}
 
-          <AppButton title={"Book Now"} />
+          <AppButton onPress={initiateWhatsApp} title={"Book Now"} />
         </View>
       </ScrollView>
     </SafeAreaView>
