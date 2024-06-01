@@ -225,8 +225,7 @@ const ItemScreen = ({ route }) => {
               </Text>
             </View>
           )} */}
-
-          <AppButton onPress={initiateWhatsApp} title={"Book Now"} />
+          <AppButton disabled={data.booked ==='true'} onPress={initiateWhatsApp} title={data.booked ==='true'? "Already Booked": "Book Now"} />
         </View>
       </ScrollView>
     </SafeAreaView>

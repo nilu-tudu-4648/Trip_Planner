@@ -82,12 +82,8 @@ function AppNavigator() {
         <>
           <Stack.Screen
             options={options}
-            name={NAVIGATION.HOME}
-            component={HomeScreen}
-          />
-          <Stack.Screen
-            options={options}
             name={NAVIGATION.DISCOVER}
+            initialParams={{user}}
             component={Discover}
           />
           <Stack.Screen

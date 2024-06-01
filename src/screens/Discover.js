@@ -12,16 +12,15 @@ import MenuContainer from "../components/MenuContainer";
 import ItemCarDontainer from "../components/ItemCarDontainer";
 import { FIRESTORE_COLLECTIONS } from "../constants/data";
 import { AppLoader } from "../components";
-import { useSelector } from "react-redux";
 import AppSearchBar from "../components/AppSearchBar";
 import { NAVIGATION } from "../constants/routes";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-const Discover = ({ navigation }) => {
+const Discover = ({ navigation ,route}) => {
   const [type, setType] = useState("rooms");
-  const { user } = useSelector((state) => state.entities.localReducer);
+  const { user } = route.params
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
   const [likeddata, setlikeddata] = useState([]);
@@ -29,7 +28,6 @@ const Discover = ({ navigation }) => {
   async function geroomsDataFunc() {
     try {
       setIsLoading(true); // Set loading state to true when fetching data
-
       const roomsCollectionRef = collection(
         db,
         FIRESTORE_COLLECTIONS.All_ROOMS
@@ -42,7 +40,7 @@ const Discover = ({ navigation }) => {
         rooms.push({ id: doc.id, ...doc.data() });
       });
 
-      setMainData(rooms)
+      setMainData(rooms.filter(ite=>ite.booked!=='true'))
       const likedData = rooms.filter((room) =>
         user.likedPlaces.includes(room.name)
       );
@@ -84,7 +82,6 @@ const Discover = ({ navigation }) => {
     return (
       <ScrollView>
         {type === "rooms" ? (
-
             <View className="px-3 items-center justify-evenly">
               {filteredData.length > 0 ? (
                 <>
