@@ -23,9 +23,9 @@ const ItemCarDontainer = ({ imageSrc, title, location, data, func }) => {
             {title?.length > 14 ? `${title.slice(0, 14)}..` : title}
           </Text>
           <View style={FSTYLES}>
-            <View style={{ ...FSTYLES, width:location?.length > 14? "35%":'10%' }}>
+            <View style={{ ...FSTYLES, width: "38%",justifyContent:'flex-start' }}>
               <FontAwesome name="map-marker" size={20} color="#8597A2" />
-              <Text className="text-[#428288] text-[13px] font-bold">
+              <Text className="text-[#428288] text-[13px] font-bold ml-1">
                 {location?.length > 18
                   ? `${location.slice(0, 14)}..`
                   : location}
