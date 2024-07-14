@@ -70,6 +70,33 @@ export function showToast(msg) {
 
 //api calls
 
+export async function getRoomsDataFunc(setMainData, setLikedData, setIsLoading, user) {
+  try {
+    setIsLoading(true); // Set loading state to true when fetching data
+    const roomsCollectionRef = collection(db, FIRESTORE_COLLECTIONS.All_ROOMS);
+    const querySnapshot = await getDocs(roomsCollectionRef);
+    const rooms = [];
+
+    querySnapshot.forEach((doc) => {
+      // For each document, push its data into the rooms array
+      rooms.push({ id: doc.id, ...doc.data() });
+    });
+
+    // Filter rooms that are not booked
+    setMainData(rooms.filter((item) => item.booked !== "true"));
+
+    if (user && Array.isArray(user.likedPlaces)) {
+      const likedData = rooms.filter((room) => user.likedPlaces.includes(room.name));
+      setLikedData(likedData);
+    } else {
+      setLikedData([]); // Set to empty array if user.likedPlaces is undefined or not an array
+    }
+  } catch (error) {
+    console.error("Error fetching rooms:", error);
+  } finally {
+    setIsLoading(false); // Ensure loading state is set to false even in case of error
+  }
+}
 export const updateUser = async (fdata, dispatch) => {
   try {
     const postRef = doc(db, FIRESTORE_COLLECTIONS.USERS, fdata.id);
@@ -135,7 +162,6 @@ export const getAllRoomss = async (dispatch, func) => {
       const id = doc.id;
       return arr.push({ id, ...data });
     });
-    console.log(arr)
     dispatch(setAllRooms(arr));
     func(false);
   } catch (error) {

@@ -45,7 +45,7 @@ const AllRoomsScreen = ({ navigation }) => {
 
   useEffect(() => {
     callGetAllplayer(); // Assuming this function fetches data and sets it in Redux store
-  }, [dispatch]);
+  }, [dispatch,allRooms]);
 
   useEffect(() => {
     filterData();
@@ -67,7 +67,7 @@ const AllRoomsScreen = ({ navigation }) => {
   return (
     <>
       <AppLoader loading={loading} />
-      <HomeHeader header={"ALL ROOMS"} />
+      <HomeHeader header={"All Rooms"} />
       <AppView>
         <AppSearchBar
           style={{ width: "99%" }}
@@ -80,7 +80,7 @@ const AllRoomsScreen = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
         >
           {data?.map((item, i) => (
-            <View key={i} style={styles.card}>
+            <View key={i} style={{...styles.card,backgroundColor:item.booked==='false'?'lightgreen':'white'}}>
               <View style={{ ...FSTYLES }}>
                 {item.roomPics.Roompic1 ? (
                   <Image

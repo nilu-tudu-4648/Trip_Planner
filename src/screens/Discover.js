@@ -1,56 +1,26 @@
 import {
   View,
   Text,
-  SafeAreaView,
   Image,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Avatar, Hotels, NotFound, ComingSoon } from "../../assets";
-import MenuContainer from "../components/MenuContainer";
+import { Avatar, NotFound } from "../../assets";
 import ItemCarDontainer from "../components/ItemCarDontainer";
-import { FIRESTORE_COLLECTIONS } from "../constants/data";
 import { AppLoader } from "../components";
 import AppSearchBar from "../components/AppSearchBar";
 import { NAVIGATION } from "../constants/routes";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { getRoomsDataFunc } from "../constants/functions";
 
-const Discover = ({ navigation ,route}) => {
-  const [type, setType] = useState("rooms");
-  const { user } = route.params
+const Discover = ({ navigation, route }) => {
+  const { user } = route.params;
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
-  const [likeddata, setlikeddata] = useState([]);
+  const [likeddata, setLikedData] = useState([]);
   const [query, setQuery] = useState("");
-  async function geroomsDataFunc() {
-    try {
-      setIsLoading(true); // Set loading state to true when fetching data
-      const roomsCollectionRef = collection(
-        db,
-        FIRESTORE_COLLECTIONS.All_ROOMS
-      );
-      const querySnapshot = await getDocs(roomsCollectionRef);
-      const rooms = [];
 
-      querySnapshot.forEach((doc) => {
-        // For each document, push its data into the rooms array
-        rooms.push({ id: doc.id, ...doc.data() });
-      });
-
-      setMainData(rooms.filter(ite=>ite.booked!=='true'))
-      const likedData = rooms.filter((room) =>
-        user.likedPlaces.includes(room.name)
-      );
-      setlikeddata(likedData);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false); // Ensure loading state is set to false even in case of error
-      console.error("Error fetching rooms:", error);
-    }
-  }
 
   const filterData = () => {
     if (!query) {
@@ -76,51 +46,39 @@ const Discover = ({ navigation ,route}) => {
   const filteredData = filterData();
   const filteredLikedData = filterLikedData();
   useEffect(() => {
-    geroomsDataFunc();
-  }, [type]);
+    getRoomsDataFunc(setMainData,setLikedData,setIsLoading,user);
+  }, [user]);
   const AllRooms = () => {
     return (
       <ScrollView>
-        {type === "rooms" ? (
-            <View className="px-3 items-center justify-evenly">
-              {filteredData.length > 0 ? (
-                <>
-                  {filteredData.map((data, i) => {
-                    const imageUrls = Object.values(data.roomPics).filter(
-                      (url) => url.trim() !== ""
-                    );
-                    return (
-                      <ItemCarDontainer
-                        key={i}
-                        imageSrc={imageUrls[0]}
-                        title={data?.name}
-                        location={data?.address}
-                        data={data}
-                        func={setQuery}
-                      />
-                    );
-                  })}
-                </>
-              ) : (
-                <View className="w-full h-[400px] items-center space-y-8 justify-center">
-                  <Image
-                    source={NotFound}
-                    className=" w-32 h-32 object-cover"
+        <View className="px-3 items-center justify-evenly">
+          {filteredData.length > 0 ? (
+            <>
+              {filteredData.map((data, i) => {
+                const imageUrls = Object.values(data.roomPics).filter(
+                  (url) => url.trim() !== ""
+                );
+                return (
+                  <ItemCarDontainer
+                    key={i}
+                    imageSrc={imageUrls[0]}
+                    title={data?.name}
+                    location={data?.address}
+                    data={data}
+                    func={setQuery}
                   />
-                  <Text className="text-1xl text-[#428288] font-semibold">
-                    Opps...No Data Found
-                  </Text>
-                </View>
-              )}
+                );
+              })}
+            </>
+          ) : (
+            <View className="w-full h-[400px] items-center space-y-8 justify-center">
+              <Image source={NotFound} className=" w-32 h-32 object-cover" />
+              <Text className="text-1xl text-[#428288] font-semibold">
+                Opps...No Data Found
+              </Text>
             </View>
-        ) : (
-          <View className="w-full h-[400px] items-center space-y-8 justify-center">
-            <Image source={ComingSoon} className=" w-32 h-32 object-cover" />
-            <Text className="text-1xl text-[#428288] font-semibold">
-              Coming Soon
-            </Text>
-          </View>
-        )}
+          )}
+        </View>
       </ScrollView>
     );
   };
@@ -161,13 +119,13 @@ const Discover = ({ navigation ,route}) => {
 
   const Tab = createMaterialTopTabNavigator();
   return (
-    <SafeAreaView className="flex-1 bg-white relative my-4">
+    <View className="flex-1 bg-white relative my-4">
       <View className="flex-row items-center justify-between p-6">
         <View>
           <Text className="text-[30px] text-[#0B646B] font-bold my-2">
-            Hey {user.firstName}
+            Heys {user.firstName}
           </Text>
-          <Text className="text-[#527283] text-[26px]">
+          <Text className="text-[#527283] text-[22px]">
             Book hostels and Rooms
           </Text>
         </View>
@@ -198,7 +156,7 @@ const Discover = ({ navigation ,route}) => {
           <Tab.Screen name="Liked Rooms" component={LikedRooms} />
         </Tab.Navigator>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

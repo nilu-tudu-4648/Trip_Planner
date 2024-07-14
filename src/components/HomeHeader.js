@@ -17,7 +17,7 @@ const HomeHeader = ({ header }) => {
       <Appbar.Content title={header} />
       <TouchableOpacity
         onPress={() => navigation.navigate(NAVIGATION.PROFILE)}
-        className="w-12 h-12 bg-gray-400 rounded-xl self-end items-center justify-center shadow-lg"
+        className="w-11 h-11 bg-gray-400 rounded-xl self-end items-center justify-center shadow-lg m-1"
       >
         <Image
           source={user.profilePic ? { uri: user.profilePic } : Avatar}

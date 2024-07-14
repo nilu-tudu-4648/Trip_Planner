@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "react-native";
 import { COLORS, FSTYLES, SIZES, STYLES } from "../../constants/theme";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { db } from "../../../firebaseConfig";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { FIRESTORE_COLLECTIONS } from "../../constants/data";
@@ -22,10 +22,13 @@ import {
   AppButton,
   FormInput,
   HomeHeader,
+  AppTextInput,
 } from "../../components";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import ChangeStatusDialog from "../../components/ChangeStatusDialog";
 const CreateRoom = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
+  const [visible, setvisible] = useState(false);
   const [text, setText] = useState("");
   const [markettext, setmarketText] = useState("");
   const [amenities, setamenities] = useState([]);
@@ -42,10 +45,10 @@ const CreateRoom = ({ navigation, route }) => {
     if (item) {
       if (item.roomPics) setroomPicsData(item.roomPics);
       if (item.amenities) setamenities(item.amenities);
-      if (item.nearest_sabjimarket) setnearest_sabjimarket(item.nearest_sabjimarket);
+      if (item.nearest_sabjimarket)
+        setnearest_sabjimarket(item.nearest_sabjimarket);
     }
   }, [item]);
-
 
   const handleButtonPress = () => {
     if (!text) return showToast("Add amenities");
@@ -88,6 +91,7 @@ const CreateRoom = ({ navigation, route }) => {
     control,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -99,6 +103,7 @@ const CreateRoom = ({ navigation, route }) => {
       description: item.description || "",
       rating: item.rating || "",
       distanceFromPetrolPump: item.distanceFromPetrolPump || "",
+      booked:item.booked|| "false",
     },
   });
   const onSubmit = async (data) => {
@@ -111,6 +116,7 @@ const CreateRoom = ({ navigation, route }) => {
       description,
       rating,
       distanceFromPetrolPump,
+      booked,
     } = data;
 
     try {
@@ -132,6 +138,7 @@ const CreateRoom = ({ navigation, route }) => {
         amenities,
         nearest_sabjimarket,
         distanceFromPetrolPump,
+        booked,
         uploaded_date: `${new Date().toString()}`,
       };
 
@@ -157,7 +164,7 @@ const CreateRoom = ({ navigation, route }) => {
       setValue("description", "");
       setValue("rating", "");
       setValue("distanceFromPetrolPump", "");
-      navigation.navigate(NAVIGATION.ADMIN_HOME);
+      navigation.navigate(NAVIGATION.ADMIN_ALL_ROOM);
     } catch (error) {
       console.error("Error adding or updating room:", error);
       showToast("Something went wrong");
@@ -182,7 +189,9 @@ const CreateRoom = ({ navigation, route }) => {
     },
     []
   );
-
+  const setValueChange = (str) => {
+    setValue("booked", str);
+  };
   return (
     <>
       <HomeHeader header={"Create Room"} />
@@ -215,66 +224,69 @@ const CreateRoom = ({ navigation, route }) => {
               </TouchableOpacity>
             ))}
           </ScrollView>
+          <Controller
+            control={control}
+            name="booked"
+            render={({ field: { onChange, value } }) => {
+              return (
+                <View>
+                  <TouchableOpacity onPress={() => setvisible(true)}>
+                    <AppTextInput
+                      onChangeText={onChange}
+                      value={getValues("booked")}
+                      editable={false}
+                      inputStyle={styles.textInput}
+                    />
+                  </TouchableOpacity>
+                </View>
+              );
+            }}
+          />
           <FormInput
             control={control}
             rules={rules}
             placeholder={"Room or Building name"}
             name="name"
           />
-          <View>
-            <FormInput
-              control={control}
-              rules={rules}
-              placeholder={"Address"}
-              name="address"
-            />
-          </View>
-          <View>
-            <FormInput
-              control={control}
-              rules={rules}
-              placeholder={"Sharing Type"}
-              name="sharingType"
-            />
-          </View>
-          <View>
-            <FormInput
-              control={control}
-              rules={rules}
-              placeholder={"Room For"}
-              name="roomFor"
-            />
-          </View>
-          <View>
-            <FormInput
-              control={control}
-              placeholder={"Distance from petrol pump"}
-              name="distanceFromPetrolPump"
-            />
-          </View>
-          <View>
-            <FormInput
-              control={control}
-              rules={{ required: "This field is mandatory" }}
-              placeholder={"Rent Price"}
-              name="rentPrice"
-            />
-          </View>
-          <View>
-            <FormInput
-              control={control}
-              placeholder={"Add Some Description"}
-              name="description"
-            />
-          </View>
-          <View>
-            <FormInput
-              control={control}
-              rules={{ required: "This field is mandatory" }}
-              placeholder={"Rating"}
-              name="rating"
-            />
-          </View>
+          <FormInput
+            control={control}
+            rules={rules}
+            placeholder={"Address"}
+            name="address"
+          />
+          <FormInput
+            control={control}
+            rules={rules}
+            placeholder={"Sharing Type"}
+            name="sharingType"
+          />
+          <FormInput
+            control={control}
+            placeholder={"Room For"}
+            name="roomFor"
+          />
+          <FormInput
+            control={control}
+            placeholder={"Distance from petrol pump"}
+            name="distanceFromPetrolPump"
+          />
+          <FormInput
+            control={control}
+            rules={{ required: "This field is mandatory" }}
+            placeholder={"Rent Price"}
+            name="rentPrice"
+          />
+          <FormInput
+            control={control}
+            placeholder={"Add Some Description"}
+            name="description"
+          />
+          <FormInput
+            control={control}
+            rules={{ required: "This field is mandatory" }}
+            placeholder={"Rating"}
+            name="rating"
+          />
           <AppText>Amenities</AppText>
           <View style={styles.inputcontainer}>
             <TextInput
@@ -323,10 +335,7 @@ const CreateRoom = ({ navigation, route }) => {
             />
           </View>
           {nearest_sabjimarket?.map((ite, i) => (
-            <View
-              key={ite}
-              style={{ ...FSTYLES, marginVertical: SIZES.base }}
-            >
+            <View key={ite} style={{ ...FSTYLES, marginVertical: SIZES.base }}>
               <AppText>
                 {i + 1}. {ite}
               </AppText>
@@ -339,6 +348,11 @@ const CreateRoom = ({ navigation, route }) => {
             </View>
           ))}
         </ScrollView>
+        <ChangeStatusDialog
+          visible={visible}
+          setVisible={setvisible}
+          setValueChange={setValueChange}
+        />
         <AppButton title={"Submit"} onPress={handleSubmit(onSubmit)} />
       </View>
     </>
@@ -371,6 +385,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingVertical: 10,
+  },
+  textInput: {
+    marginBottom: 8,
   },
   button: {
     paddingVertical: 12,
