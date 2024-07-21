@@ -30,8 +30,8 @@ const LoginScreen = ({ navigation }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      phone: "9155186702",
-      password: "123",
+      phone: "",
+      password: "",
     },
   });
   const dispatch = useDispatch();
