@@ -9,19 +9,15 @@ import {
   BackHandler,
   Linking,
 } from "react-native";
-import {
-  FontAwesome,
-  FontAwesome5,
-  AntDesign,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import { AppButton } from "../components";
+import { AntDesign } from "@expo/vector-icons";
+import { AppButton, DrawerHeader } from "../components";
 import Carousel from "react-native-reanimated-carousel";
 import { SIZES } from "../constants/theme";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
 import { useNavigation } from "@react-navigation/native";
+import { ITEM_KEYS } from "../constants/data";
 const ItemScreen = ({ route }) => {
   const { user } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
@@ -44,23 +40,21 @@ const ItemScreen = ({ route }) => {
       console.log(error);
     }
   };
-  const mobileNumber = '9155186701'
+  const mobileNumber = "9155186701";
   const initiateWhatsApp = () => {
     if (mobileNumber.length != 10) {
-      alert('Please insert correct WhatsApp number');
+      alert("Please insert correct WhatsApp number");
       return;
     }
-    const whatsAppMsg = `Hi ,I want this room name:${data.name}`
+    const whatsAppMsg = `Hi ,I want this room name:${data.name}`;
     let url =
-      'whatsapp://send?text=' + 
-       whatsAppMsg +
-      '&phone=91' + mobileNumber;
+      "whatsapp://send?text=" + whatsAppMsg + "&phone=91" + mobileNumber;
     Linking.openURL(url)
       .then((data) => {
-        console.log('WhatsApp Opened');
+        console.log("WhatsApp Opened");
       })
       .catch(() => {
-        alert('Make sure Whatsapp installed on your device');
+        alert("Make sure Whatsapp installed on your device");
       });
   };
   BackHandler.addEventListener(
@@ -75,8 +69,9 @@ const ItemScreen = ({ route }) => {
     (url) => url.trim() !== ""
   );
   return (
-    <SafeAreaView className="flex-1 bg-white relative py-10">
-      <ScrollView className="flex-1 px-4">
+    <SafeAreaView className="flex-1 bg-white relative py-5">
+<DrawerHeader user={user} iconColor={"black"} header={"ROOMHUNT"} />
+      <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-4">
         <View className="relative bg-white shadow-lg">
           <Carousel
             loop
@@ -86,7 +81,7 @@ const ItemScreen = ({ route }) => {
             scrollAnimationDuration={1000}
             renderItem={({ item, index }) => (
               <View
-              key={index}
+                key={index}
                 style={{
                   flex: 1,
                   justifyContent: "center",
@@ -94,140 +89,75 @@ const ItemScreen = ({ route }) => {
               >
                 <Image
                   source={{ uri: item }}
-                  style={{ width: "100%",height:'100%', resizeMode: "stretch" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    resizeMode: "stretch",
+                  }}
                 />
               </View>
             )}
           />
-          <View className="absolute flex-row inset-x-0 top-5 justify-between px-3">
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Discover")}
-              className="w-10 h-10 rounded-md items-center justify-center bg-white"
-            >
-              <FontAwesome5 name="chevron-left" size={24} color="#06B2BE" />
-            </TouchableOpacity>
-
+        </View>
+        {/* Details Section */}
+        <View className="mt-6">
+          <View className="flex-row justify-between">
+            <Text className="text-[black] text-[26px] font-bold">
+              ₹{data?.rentPrice}
+            </Text>
             <TouchableOpacity
               onPress={() => addtoLikedPlace()}
-              className="w-10 h-10 rounded-md items-center justify-center bg-[#06B2BE]"
+              className="w-10 h-10 rounded-md items-center justify-center"
             >
               <AntDesign
                 name={
                   user.likedPlaces?.includes(data.name) ? "heart" : "hearto"
                 }
                 size={24}
-                color="white"
+                color="black"
               />
             </TouchableOpacity>
           </View>
-
-          <View className="absolute flex-row inset-x-0 bottom-5 justify-end px-6">
-            <View className="px-2 py-1 rounded-md bg-teal-100">
-              <Text>{"open_now"}</Text>
-            </View>
-          </View>
-        </View>
-        {/* Details Section */}
-        <View className="mt-6">
-          <Text className="text-[#428288] text-[20px] font-bold">
-            {data?.name}
+          <Text className="text-[black] text-[16px]">
+            Sale!!! 2bhk fully furnished flat for sale at just 50 lakhs
           </Text>
-          <View className="flex-row items-center space-x-2 mt-2">
-            <FontAwesome name="map-marker" size={25} color="#8C9EA6" />
-            <Text className="text-[#8C9EA6] text-[18px] font-bold">
+          <View
+            style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
+          />
+          <View className="flex-row items-center space-x-2 my-1">
+            <Text className="text-[#8C9EA6] text-[15px] font-bold">
               {data?.address}
             </Text>
           </View>
         </View>
-
-        <View className="mt-4 flex-row items-center justify-between">
-          {/* Rating Section */}
-          {data?.rating && (
-            <View className=" flex-row items-center space-x-2">
-              <View className="w-12 h-12 rounded-2xl bg-red-100 items-center justify-center shadow-md">
-                <FontAwesome name="star" size={24} color="#D58574" />
-              </View>
-              <View>
-                <Text className="text-[#515151] font-bold">{data?.rating}</Text>
-                <Text className="text-[#515151] font-bold">Ratings</Text>
-              </View>
+        <View
+          style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
+        />
+        <Text className="text-[#515151] font-bold text-[22px]">Details</Text>
+        {ITEM_KEYS.map((item) => (
+          <View key={item.key} className="flex-row justify-between">
+            <Text className="my-1">{item.key}</Text>
+            <View>
+              <Text>{item.value}</Text>
             </View>
-          )}
-          {/* <Chip onPress={() => console.log('Pressed')}>Example Chip</Chip> */}
-
-          {/* Rent Price Section */}
-          {data.rentPrice && (
-            <View className=" flex-row items-center space-x-2">
-              <View className="w-12 h-12 rounded-2xl bg-red-100 items-center justify-center shadow-md">
-                <Text className="text-[#D58574] text-[18px] ">₹</Text>
-              </View>
-              <View>
-                <Text className="text-[#515151] font-bold">
-                  {data?.rentPrice}
-                </Text>
-                <Text className="text-[#515151] font-bold">Rent</Text>
-              </View>
-            </View>
-          )}
-        </View>
-
-        {/* Description Section */}
+          </View>
+        ))}
+        <Text className="text-[#515151] font-bold text-[22px]">
+          Description
+        </Text>
         {data?.description && (
           <Text className="tracking-wide text-[16px] font-semibold text-[#97A6AF]">
             {data?.description}
           </Text>
         )}
-
-        {/* Additional Details Section */}
-        <View className="space-y-2 mt-4 bg-gray-100 rounded-2xl px-4 py-2">
-          {data?.sharingType && (
-            <View className="items-center flex-row space-x-6">
-              <MaterialCommunityIcons
-                name="gender-male"
-                size={24}
-                color="#428288"
-              />
-              <Text className="text-lg">{data?.roomFor}</Text>
-            </View>
-          )}
-          {data?.sharingType && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome name="users" size={24} color="#428288" />
-              <Text className="text-lg">{data?.sharingType}</Text>
-            </View>
-          )}
-
-          {/* Email */}
-          {data?.email && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome name="envelope" size={24} color="#428288" />
-              <Text className="text-lg">{data?.email}</Text>
-            </View>
-          )}
-
-          {/* Amenities */}
-          {data?.amenities && data.amenities.length > 0 && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome5 name="tasks" size={24} color="#428288" />
-              <View>
-                {/* <Text className="text-lg">Amenities</Text> */}
-                <Text className="text-lg">{data?.amenities.join(", ")}</Text>
-              </View>
-            </View>
-          )}
-
-          {/* Distance from Petrol Pump */}
-          {/* {data?.distanceFromPetrolPump && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome name="tachometer" size={24} color="#428288" />
-              <Text className="text-lg">
-                {`Distance from Petrol Pump: ${data?.distanceFromPetrolPump} km`}
-              </Text>
-            </View>
-          )} */}
-          <AppButton disabled={data.booked ==='true'} onPress={initiateWhatsApp} title={data.booked ==='true'? "Already Booked": "Book Now"} />
-        </View>
       </ScrollView>
+      <View className="space-y-2 rounded-2xl px-4 py-2">
+        <AppButton
+          disabled={data.booked === "true"}
+          onPress={initiateWhatsApp}
+          title={data.booked === "true" ? "Already Booked" : "Book Now"}
+        />
+      </View>
     </SafeAreaView>
   );
 };

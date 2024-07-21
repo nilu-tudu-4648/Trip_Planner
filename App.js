@@ -3,8 +3,8 @@ import React from 'react';
 import { store } from './src/store/configureStore';
 import { PaperProvider } from 'react-native-paper';
 import { Provider } from 'react-redux';
-import AppNavigator from './src/navigation/AppNavigator';
 import { StatusBar } from 'expo-status-bar';
+import DrawerNavigator from './src/navigation/DrawerNavigator';
 
 export default function App() {
 
@@ -16,7 +16,7 @@ export default function App() {
       <StatusBar style="auto" />
       <Provider store={store}>
         <PaperProvider>
-          <AppNavigator />
+          <DrawerNavigator />
         </PaperProvider>
       </Provider>
     </NavigationContainer>

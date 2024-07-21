@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         borderWidth: .4,
         borderColor: COLORS.gray,
         backgroundColor: COLORS.white,
-        borderRadius: SIZES.base
+        borderRadius: SIZES.base/2
     }
 })
 export default React.memo(AppSearchBar)

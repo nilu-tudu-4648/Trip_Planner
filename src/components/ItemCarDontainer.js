@@ -1,11 +1,11 @@
 import { View, Text, Image, Pressable } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome,AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NAVIGATION } from "../constants/routes";
-import { FSTYLES, } from "../constants/theme";
+import { FSTYLES } from "../constants/theme";
 
-const ItemCarDontainer = ({ imageSrc, title, location, data, func }) => {
+const ItemCarDontainer = ({user, imageSrc, location, data, func }) => {
   const navigation = useNavigation();
   return (
     <Pressable
@@ -13,32 +13,37 @@ const ItemCarDontainer = ({ imageSrc, title, location, data, func }) => {
         func("");
         navigation.navigate(NAVIGATION.ITEMSCREEN, { param: data });
       }}
-      className="rounded-md w-full h-50 border border-gray-300 p-2 shadow-md bg-white my-2"
+      className="rounded-md w-full h-45 border border-gray-300 p-2 shadow-md bg-white my-2 flex-row justify-between"
     >
-      <Image source={{ uri: imageSrc }} className="w-full h-40 rounded-md" />
-
-      {title ? (
-        <>
-          <Text className="text-[#428288] text-[16px] font-bold">
-            {title?.length > 14 ? `${title.slice(0, 14)}..` : title}
-          </Text>
-          <View style={FSTYLES}>
-            <View style={{ ...FSTYLES, width: "38%",justifyContent:'flex-start' }}>
-              <FontAwesome name="map-marker" size={20} color="#8597A2" />
-              <Text className="text-[#428288] text-[13px] font-bold ml-1">
-                {location?.length > 18
-                  ? `${location.slice(0, 14)}..`
-                  : location}
-              </Text>
-            </View>
-            <Text className="text-[#428288] text-[13px] font-bold">
+      <Image source={{ uri: imageSrc }} className="w-[35%] h-40 rounded-md" />
+      <View className="w-[60%] flex-column justify-between">
+        <View>
+        <View style={FSTYLES}>
+          <Text className="text-[black] text-[26px] font-bold">
             ₹ {data.rentPrice}
-            </Text>
-          </View>
-        </>
-      ) : (
-        <></>
-      )}
+          </Text>
+          <AntDesign
+                name={
+                  user.likedPlaces?.includes(data.name) ? "heart" : "hearto"
+                }
+                size={24}
+                color="black"
+              />
+        </View>
+          <Text className=" text-[13px] font-bold">
+            2-bds-2ba-1500 ft2
+          </Text>
+          <Text className="text-gray-600 text-[13px]">
+            FLAT FURNISHED
+          </Text>
+        </View>
+        <View style={FSTYLES}>
+          <Text className="text-gray-600 text-[13px]">
+            {location?.length > 18 ? `${location.slice(0, 14)}..` : location}
+          </Text>
+          <Text className="text-gray-600 text-[13px]">12 JULY</Text>
+        </View>
+      </View>
     </Pressable>
   );
 };

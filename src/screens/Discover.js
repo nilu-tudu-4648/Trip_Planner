@@ -1,26 +1,31 @@
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Avatar, NotFound } from "../../assets";
+import { NotFound } from "../../assets";
 import ItemCarDontainer from "../components/ItemCarDontainer";
-import { AppLoader } from "../components";
+import { AppLoader, ChipComponent, DrawerHeader } from "../components";
 import AppSearchBar from "../components/AppSearchBar";
-import { NAVIGATION } from "../constants/routes";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { getRoomsDataFunc } from "../constants/functions";
 
-const Discover = ({ navigation, route }) => {
+
+const Discover = ({ route }) => {
   const { user } = route.params;
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
   const [likeddata, setLikedData] = useState([]);
   const [query, setQuery] = useState("");
+  const [sortCriteria, setSortCriteria] = useState(null); // State for sorting criteria
+  const sortData = (data) => {
+    if (!sortCriteria) return data; // Return data as is if no sorting criteria is set
 
+    return data.slice().sort((a, b) => {
+      if (sortCriteria === "low-high") {
+        return a.rentPrice - b.rentPrice;
+      } else if (sortCriteria === "high-low") {
+        return b.rentPrice - a.rentPrice;
+      }
+      return 0; // Return 0 if no valid sorting criteria
+    });
+  };
 
   const filterData = () => {
     if (!query) {
@@ -32,26 +37,16 @@ const Discover = ({ navigation, route }) => {
         data.address.toLowerCase().includes(query.toLowerCase())
     );
   };
-  const filterLikedData = () => {
-    if (!query) {
-      return likeddata; // Return all data if the query is empty
-    }
-    return likeddata.filter(
-      (data) =>
-        data.name.toLowerCase().includes(query.toLowerCase()) ||
-        data.address.toLowerCase().includes(query.toLowerCase())
-    );
-  };
 
-  const filteredData = filterData();
-  const filteredLikedData = filterLikedData();
+  const filteredData = sortData(filterData());
   useEffect(() => {
-    getRoomsDataFunc(setMainData,setLikedData,setIsLoading,user);
+    getRoomsDataFunc(setMainData, setLikedData, setIsLoading, user);
   }, [user]);
+
   const AllRooms = () => {
     return (
-      <ScrollView>
-        <View className="px-3 items-center justify-evenly">
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="px-1 items-center justify-evenly">
           {filteredData.length > 0 ? (
             <>
               {filteredData.map((data, i) => {
@@ -60,40 +55,7 @@ const Discover = ({ navigation, route }) => {
                 );
                 return (
                   <ItemCarDontainer
-                    key={i}
-                    imageSrc={imageUrls[0]}
-                    title={data?.name}
-                    location={data?.address}
-                    data={data}
-                    func={setQuery}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            <View className="w-full h-[400px] items-center space-y-8 justify-center">
-              <Image source={NotFound} className=" w-32 h-32 object-cover" />
-              <Text className="text-1xl text-[#428288] font-semibold">
-                Opps...No Data Found
-              </Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
-    );
-  };
-  const LikedRooms = () => {
-    return (
-      <ScrollView>
-        <View className="px-3 items-center justify-evenly">
-          {filteredLikedData.length > 0 ? (
-            <>
-              {filteredLikedData.map((data, i) => {
-                const imageUrls = Object.values(data.roomPics).filter(
-                  (url) => url.trim() !== ""
-                );
-                return (
-                  <ItemCarDontainer
+                  user={user}
                     key={i}
                     imageSrc={imageUrls[0]}
                     title={data?.name}
@@ -117,45 +79,18 @@ const Discover = ({ navigation, route }) => {
     );
   };
 
-  const Tab = createMaterialTopTabNavigator();
   return (
-    <View className="flex-1 bg-white relative my-4">
-      <View className="flex-row items-center justify-between p-6">
-        <View>
-          <Text className="text-[30px] text-[#0B646B] font-bold my-2">
-            Heys {user.firstName}
-          </Text>
-          <Text className="text-[#527283] text-[22px]">
-            Book hostels and Rooms
-          </Text>
-        </View>
-        <View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(NAVIGATION.PROFILE)}
-            className="w-12 h-12 bg-gray-400 rounded-md self-end items-center justify-center shadow-lg"
-          >
-            <Image
-              source={user.profilePic ? { uri: user.profilePic } : Avatar}
-              className="w-full h-full rounded-md object-cover"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View className="mx-2">
+    <View className="flex-1 bg-white relative my-5">
+      <DrawerHeader user={user} iconColor={"black"} header={"ROOMHUNT"} />
+      <View className="m-1">
         <AppSearchBar
           onChangeSearch={(text) => setQuery(text)}
           searchQuery={query}
-          placeholder={"Search by Name or Place"}
+          placeholder={"For Sale:Houses & Apartments near Ranchi"}
         />
       </View>
-      {isLoading ? (
-        <AppLoader loading={isLoading} />
-      ) : (
-        <Tab.Navigator>
-          <Tab.Screen name="All Rooms" component={AllRooms} />
-          <Tab.Screen name="Liked Rooms" component={LikedRooms} />
-        </Tab.Navigator>
-      )}
+      <ChipComponent setSortCriteria={setSortCriteria} />
+      {isLoading ? <AppLoader loading={isLoading} /> : <AllRooms />}
     </View>
   );
 };

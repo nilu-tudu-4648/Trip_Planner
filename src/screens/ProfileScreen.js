@@ -123,10 +123,6 @@ const ProfileScreen = () => {
             <AppButton title="Update" onPress={handleSubmit} />
           </ScrollView>
         </View>
-        <AppText size={1}>Version: 1.0.0</AppText>
-        <TouchableOpacity onPress={() => logoutUser(dispatch)}>
-          <AppText>Logout</AppText>
-        </TouchableOpacity>
       </AppView>
     </>
   );
