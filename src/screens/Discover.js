@@ -5,13 +5,13 @@ import ItemCarDontainer from "../components/ItemCarDontainer";
 import { AppLoader, ChipComponent, DrawerHeader } from "../components";
 import AppSearchBar from "../components/AppSearchBar";
 import { getRoomsDataFunc } from "../constants/functions";
-
+import { useDispatch } from "react-redux";
 
 const Discover = ({ route }) => {
   const { user } = route.params;
+  const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
-  const [likeddata, setLikedData] = useState([]);
   const [query, setQuery] = useState("");
   const [sortCriteria, setSortCriteria] = useState(null); // State for sorting criteria
   const sortData = (data) => {
@@ -40,7 +40,7 @@ const Discover = ({ route }) => {
 
   const filteredData = sortData(filterData());
   useEffect(() => {
-    getRoomsDataFunc(setMainData, setLikedData, setIsLoading, user);
+    getRoomsDataFunc(dispatch,setMainData, setIsLoading, user);
   }, [user]);
 
   const AllRooms = () => {
@@ -55,7 +55,7 @@ const Discover = ({ route }) => {
                 );
                 return (
                   <ItemCarDontainer
-                  user={user}
+                    user={user}
                     key={i}
                     imageSrc={imageUrls[0]}
                     title={data?.name}
@@ -81,7 +81,7 @@ const Discover = ({ route }) => {
 
   return (
     <View className="flex-1 bg-white relative my-5">
-      <DrawerHeader user={user} iconColor={"black"} header={"ROOMHUNT"} />
+      <DrawerHeader user={user} iconColor={"black"}  />
       <View className="m-1">
         <AppSearchBar
           onChangeSearch={(text) => setQuery(text)}

@@ -1,10 +1,24 @@
+import { NAVIGATION } from "./routes";
+
 export const dashboardCards = [
-  { name: "Create Room", navigation: "CreateRoom" },
-  { name: "All Rooms", navigation: "AdminAllRooms" },
+  { name: "Home", navigation: NAVIGATION.DISCOVER },
+  { name: "My Favorites", navigation: NAVIGATION.FAVORITES },
+  { name: "Start Selling", navigation: NAVIGATION.CREATE_SELLING },
+  { name: "My ADS", navigation: NAVIGATION.MY_ADS },
 ];
 
+export const createSellingdata= {
+  type: "",
+  Bedroom: "",
+  Bathroom: "",
+  Furnishing: "",
+  BachelorsAllowed: "",
+  CarParking: "",
+  Listedby: "",
+}
 export const FIRESTORE_COLLECTIONS = {
   All_ROOMS: "allRooms",
+  AD_DATA:'ad_data',
   USERS: "users",
 };
 export const ITEM_KEYS = [
@@ -23,3 +37,9 @@ export const ITEM_KEYS = [
   {key:'Floor No',value:'3'},
   {key:'Project Name',value:'Anand Moyee Tower'},
 ]
+export const types = ["Apartments", "Builder Floors", "Houses & Villas"];
+export const furnishingOptions = ["Furnished", "Semi-furnished", "Unfurnished"];
+export const bedroomData = ["1", "2", "3", "4", "4+"];
+export const BachelorsAllowed = ["No", "Yes"];
+export const CarParking = ["1", "2", "3", "4"];
+export const Listedby = ["Builder", "Dealer", "Owner"];

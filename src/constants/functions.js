@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setAllRooms, setLoginUser } from "../store/localReducer";
+import { setAllRooms, setLikedRoomForUser, setLoginUser, setMyAds } from "../store/localReducer";
 import { ToastAndroid } from "react-native";
-import { collection, deleteDoc, doc, getDocs, query, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import {
   getStorage,
   ref,
@@ -70,7 +70,7 @@ export function showToast(msg) {
 
 //api calls
 
-export async function getRoomsDataFunc(setMainData, setLikedData, setIsLoading, user) {
+export async function getRoomsDataFunc(dispatch,setMainData, setIsLoading, user) {
   try {
     setIsLoading(true); // Set loading state to true when fetching data
     const roomsCollectionRef = collection(db, FIRESTORE_COLLECTIONS.All_ROOMS);
@@ -87,10 +87,40 @@ export async function getRoomsDataFunc(setMainData, setLikedData, setIsLoading, 
 
     if (user && Array.isArray(user.likedPlaces)) {
       const likedData = rooms.filter((room) => user.likedPlaces.includes(room.name));
-      setLikedData(likedData);
+      dispatch(setLikedRoomForUser(likedData))
+  
     } else {
-      setLikedData([]); // Set to empty array if user.likedPlaces is undefined or not an array
+      // setLikedData([]); // Set to empty array if user.likedPlaces is undefined or not an array
     }
+  } catch (error) {
+    console.error("Error fetching rooms:", error);
+  } finally {
+    setIsLoading(false); // Ensure loading state is set to false even in case of error
+  }
+}
+
+export async function getMyAdsData(dispatch, setIsLoading, user) {
+  try {
+    setIsLoading(true); // Set loading state to true when fetching data
+
+    // Reference to the ads collection
+    const roomsCollectionRef = collection(db, FIRESTORE_COLLECTIONS.AD_DATA);
+
+    // Create a query that filters by userId
+    const q = query(roomsCollectionRef, where("userId", "==", user.id));
+
+    // Fetch the documents matching the query
+    const querySnapshot = await getDocs(q);
+
+    const rooms = [];
+
+    // For each document, push its data into the rooms array
+    querySnapshot.forEach((doc) => {
+      rooms.push({ id: doc.id, ...doc.data() });
+    });
+
+    // Dispatch the fetched data to the store
+    dispatch(setMyAds(rooms));
   } catch (error) {
     console.error("Error fetching rooms:", error);
   } finally {

@@ -14,6 +14,9 @@ import {
   CreateItinerary,
   SignUpScreen,
   ProfileScreen,
+  FavoritesScreen,
+  CreateSelling,
+  MyAdsScreen,
 } from "../screens";
 import { Admin_Home, CreateRoom } from "../screens/Admin";
 import AllRoomsScreen from "../screens/Admin/All_Rooms";
@@ -100,6 +103,21 @@ function AppNavigator() {
             options={options}
             name={NAVIGATION.PROFILE}
             component={ProfileScreen}
+          />
+          <Stack.Screen
+            options={options}
+            name={NAVIGATION.FAVORITES}
+            component={FavoritesScreen}
+          />
+          <Stack.Screen
+            options={options}
+            name={NAVIGATION.CREATE_SELLING}
+            component={CreateSelling}
+          />
+          <Stack.Screen
+            options={options}
+            name={NAVIGATION.MY_ADS}
+            component={MyAdsScreen}
           />
         </>
       )}

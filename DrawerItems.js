@@ -9,6 +9,7 @@ import { dashboardCards } from "./src/constants/data";
 import { logoutUser } from "./src/constants/functions";
 import { NAVIGATION } from "./src/constants/routes";
 import { AppButton, } from "./src/components";
+import { Entypo } from "@expo/vector-icons";
 const DrawerItems = ({ navigation }) => {
   const { user } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
@@ -41,22 +42,22 @@ const DrawerItems = ({ navigation }) => {
         </AppText>
       </View>
       <View style={styles.container}>
-        {/* <View style={{ width: "100%" }}>
+        <View style={{ width: "100%" }}>
           {dashboardCards.map((item, i) => (
             <TouchableOpacity
               key={i}
-              onPress={() => navigation.navigate(item.navigation)}
+              onPress={() => navigation.navigate(item.navigation,{user})}
               style={styles.drawerCards}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
+                {/* <Image
                   source={item.image}
                   resizeMode="contain"
                   style={{ width: SIZES.h3, height: SIZES.h3 }}
-                />
-                <StyleText bold={true} size={1.5} style={{ left: 12 }}>
+                /> */}
+                <AppText bold={true} size={1.5} style={{ left: 12 }}>
                   {item.name}
-                </StyleText>
+                </AppText>
               </View>
               <Entypo
                 name="chevron-right"
@@ -65,7 +66,7 @@ const DrawerItems = ({ navigation }) => {
               />
             </TouchableOpacity>
           ))}
-        </View> */}
+        </View>
         <View style={{height:100}}/>
         <View
           style={{
@@ -110,13 +111,10 @@ const styles = StyleSheet.create({
   },
   drawerCards: {
     ...FSTYLES,
-    paddingHorizontal: "10%",
-    paddingVertical: "1%",
+    paddingHorizontal: "12%",
     marginVertical: "3%",
     backgroundColor: COLORS.white,
     ...ELEVATION,
-    borderRadius: SIZES.h4,
-    width: "80%",
     alignSelf: "center",
     height: SIZES.h1 * 1.2,
   },

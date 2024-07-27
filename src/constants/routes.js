@@ -1,12 +1,15 @@
 export const NAVIGATION = {
   APP_NAVIGATOR: "AppNavi",
   LOGIN: "Login",
+  SIGN_UP: "SignUp",
   HOME: "Home",
   DISCOVER: "Discover",
   PROFILE:'Profile',
   ITEMSCREEN: "ItemScreen",
+  FAVORITES: "Favorites",
   ITINERARY: "CreateItinerary",
-  SIGN_UP: "SignUp",
+  CREATE_SELLING: "CreateSelling",
+  MY_ADS: "MyAdsScreen",
   //admin
   ADMIN_HOME:"AdminHome",
   CREATE_ROOM:"CreateRoom",

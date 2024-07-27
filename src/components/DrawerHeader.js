@@ -10,7 +10,7 @@ const DrawerHeader = ({
   style,
   user,
   iconColor,
-  header,
+  header="RENTHUNT",
   headerColor = COLORS.black,
 }) => {
   const navigation = useNavigation();

@@ -70,7 +70,7 @@ const ItemScreen = ({ route }) => {
   );
   return (
     <SafeAreaView className="flex-1 bg-white relative py-5">
-<DrawerHeader user={user} iconColor={"black"} header={"ROOMHUNT"} />
+    <DrawerHeader user={user} iconColor={"black"}  />
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-4">
         <View className="relative bg-white shadow-lg">
           <Carousel

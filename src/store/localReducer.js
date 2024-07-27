@@ -3,10 +3,11 @@ import { apiCallBegan } from "./api";
 const initialState = {
   loader: false,
   user: null,
-  userLoggedIn: 'false',
-  allRooms:[],
+  userLoggedIn: "false",
+  allRooms: [],
+  likedRooms: [],
+  myAds: [],
   //admin
-  
 };
 
 const localReducer = createSlice({
@@ -25,6 +26,12 @@ const localReducer = createSlice({
     setAllRooms: (localReducer, action) => {
       localReducer.allRooms = action.payload;
     },
+    setLikedRoomForUser: (localReducer, action) => {
+      localReducer.likedRooms = action.payload;
+    },
+    setMyAds: (localReducer, action) => {
+      localReducer.myAds = action.payload;
+    },
     checkUserLogin: (userReducer, action) => {
       userReducer.loading = false;
       userReducer.userLoggedIn = action.payload;
@@ -32,19 +39,22 @@ const localReducer = createSlice({
   },
 });
 
-const {
-  localReducerDataRequestFailed,
-  localReducerDataRequested,
-} = localReducer.actions;
+const { localReducerDataRequestFailed, localReducerDataRequested } =
+  localReducer.actions;
 
 export default localReducer.reducer;
-export const { setLoginUser, checkUserLogin,setAllRooms } = localReducer.actions
+export const {
+  setLoginUser,
+  checkUserLogin,
+  setAllRooms,
+  setLikedRoomForUser,
+  setMyAds,
+} = localReducer.actions;
 export const getunloadingData = (data) =>
   apiCallBegan({
-    method: 'post',
+    method: "post",
     data,
     onStart: localReducerDataRequested.type,
     // onSuccess: getunloadingDataRecieved.type,
     onError: localReducerDataRequestFailed.type,
   });
-

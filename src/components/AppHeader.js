@@ -10,7 +10,7 @@ const AppHeader = ({ header }) => {
   return (
     <Appbar.Header style={{backgroundColor:'white'}}>
       <Appbar.BackAction onPress={_goBack} />
-      <Appbar.Content title={header} />
+      <Appbar.Content title={header} titleStyle={{fontWeight:'700'}} />
     </Appbar.Header>
   );
 };
