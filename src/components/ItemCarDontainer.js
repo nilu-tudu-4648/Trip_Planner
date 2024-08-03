@@ -7,6 +7,7 @@ import { FSTYLES } from "../constants/theme";
 
 const ItemCarDontainer = ({ user, ads, imageSrc, location, data, func }) => {
   const navigation = useNavigation();
+  // console.log(data)
   return (
     <Pressable
       onPress={() => {

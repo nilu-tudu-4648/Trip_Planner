@@ -21,10 +21,10 @@ const DrawerItems = ({ navigation }) => {
       }}
     >
       <View style={styles.headerstyle}>
-        {user?.ImgUrl ? (
+        {user?.profilePic ? (
           <Avatar.Image
             size={SIZES.largeTitle * 1.2}
-            source={{ uri: user.ImgUrl }}
+            source={{ uri: user.profilePic }}
           />
         ) : (
           <TouchableOpacity
@@ -78,7 +78,7 @@ const DrawerItems = ({ navigation }) => {
           }}
         >
           <AppText size={1.5} color={COLORS.darkblue}>
-            1.0.2
+            1.0.1
           </AppText>
           <AppButton
             title={"Logout"}

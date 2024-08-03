@@ -1,15 +1,19 @@
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import { NotFound } from "../../assets";
 import ItemCarDontainer from "../components/ItemCarDontainer";
-import { AppLoader, ChipComponent, DrawerHeader } from "../components";
+import {
+  AppLoader,
+  ChipComponent,
+  DrawerHeader,
+  NoDataFound,
+} from "../components";
 import AppSearchBar from "../components/AppSearchBar";
 import { getRoomsDataFunc } from "../constants/functions";
 import { useDispatch } from "react-redux";
 
 const Discover = ({ route }) => {
   const { user } = route.params;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
   const [query, setQuery] = useState("");
@@ -40,7 +44,7 @@ const Discover = ({ route }) => {
 
   const filteredData = sortData(filterData());
   useEffect(() => {
-    getRoomsDataFunc(dispatch,setMainData, setIsLoading, user);
+    getRoomsDataFunc(dispatch, setMainData, setIsLoading, user);
   }, [user]);
 
   const AllRooms = () => {
@@ -67,12 +71,7 @@ const Discover = ({ route }) => {
               })}
             </>
           ) : (
-            <View className="w-full h-[400px] items-center space-y-8 justify-center">
-              <Image source={NotFound} className=" w-32 h-32 object-cover" />
-              <Text className="text-1xl text-[#428288] font-semibold">
-                Opps...No Data Found
-              </Text>
-            </View>
+            <NoDataFound />
           )}
         </View>
       </ScrollView>
@@ -81,7 +80,7 @@ const Discover = ({ route }) => {
 
   return (
     <View className="flex-1 bg-white relative my-5">
-      <DrawerHeader user={user} iconColor={"black"}  />
+      <DrawerHeader user={user} iconColor={"black"} />
       <View className="m-1">
         <AppSearchBar
           onChangeSearch={(text) => setQuery(text)}
