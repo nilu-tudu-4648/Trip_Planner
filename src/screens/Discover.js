@@ -37,7 +37,7 @@ const Discover = ({ route }) => {
     }
     return mainData.filter(
       (data) =>
-        data.name.toLowerCase().includes(query.toLowerCase()) ||
+        data.adTitle.toLowerCase().includes(query.toLowerCase()) ||
         data.address.toLowerCase().includes(query.toLowerCase())
     );
   };
@@ -54,14 +54,24 @@ const Discover = ({ route }) => {
           {filteredData.length > 0 ? (
             <>
               {filteredData.map((data, i) => {
-                const imageUrls = Object.values(data.roomPics).filter(
-                  (url) => url.trim() !== ""
+                const roomPicsData = data.roomPicsData || {};
+
+                // Extract image URLs if they exist, otherwise fallback to an empty array
+                const imageUrls = Object.values(roomPicsData).filter(
+                  (url) => url && url.trim() !== ""
                 );
+
+                // Determine the image source: either from roomPicsData or fallback to the local image
+                const imageSrc =
+                  imageUrls.length > 0
+                    ? { uri: imageUrls[0] } // For remote URLs
+                    : require("../../assets/roomImage.jpeg"); // For local images
+
                 return (
                   <ItemCarDontainer
                     user={user}
                     key={i}
-                    imageSrc={imageUrls[0]}
+                    imageSrc={imageSrc}
                     title={data?.name}
                     location={data?.address}
                     data={data}

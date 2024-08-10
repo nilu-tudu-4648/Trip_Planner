@@ -11,7 +11,7 @@ import { NAVIGATION } from "./src/constants/routes";
 import { AppButton, } from "./src/components";
 import { Entypo } from "@expo/vector-icons";
 const DrawerItems = ({ navigation }) => {
-  const { user } = useSelector((state) => state.entities.localReducer);
+  const { user,myAds } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
   return (
     <DrawerContentScrollView
@@ -46,7 +46,7 @@ const DrawerItems = ({ navigation }) => {
           {dashboardCards.map((item, i) => (
             <TouchableOpacity
               key={i}
-              onPress={() => navigation.navigate(item.navigation,{user})}
+              onPress={() => navigation.navigate(item.navigation,{user,myAds})}
               style={styles.drawerCards}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>

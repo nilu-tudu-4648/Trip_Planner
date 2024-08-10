@@ -73,7 +73,7 @@ export function showToast(msg) {
 export async function getRoomsDataFunc(dispatch,setMainData, setIsLoading, user) {
   try {
     setIsLoading(true); // Set loading state to true when fetching data
-    const roomsCollectionRef = collection(db, FIRESTORE_COLLECTIONS.All_ROOMS);
+    const roomsCollectionRef = collection(db, FIRESTORE_COLLECTIONS.AD_DATA);
     const querySnapshot = await getDocs(roomsCollectionRef);
     const rooms = [];
 
@@ -86,9 +86,8 @@ export async function getRoomsDataFunc(dispatch,setMainData, setIsLoading, user)
     setMainData(rooms.filter((item) => item.booked !== "true"));
 
     if (user && Array.isArray(user.likedPlaces)) {
-      const likedData = rooms.filter((room) => user.likedPlaces.includes(room.name));
+      const likedData = rooms.filter((room) => user.likedPlaces.includes(room.adTitle));
       dispatch(setLikedRoomForUser(likedData))
-  
     } else {
       // setLikedData([]); // Set to empty array if user.likedPlaces is undefined or not an array
     }
@@ -99,7 +98,7 @@ export async function getRoomsDataFunc(dispatch,setMainData, setIsLoading, user)
   }
 }
 
-export async function getMyAdsData(dispatch, setIsLoading, user) {
+export async function getMyAdsData( setIsLoading, user,setadsData) {
   try {
     setIsLoading(true); // Set loading state to true when fetching data
 
@@ -120,7 +119,7 @@ export async function getMyAdsData(dispatch, setIsLoading, user) {
     });
 
     // Dispatch the fetched data to the store
-    dispatch(setMyAds(rooms));
+    setadsData(rooms)
   } catch (error) {
     console.error("Error fetching rooms:", error);
   } finally {
@@ -201,6 +200,14 @@ export const getAllRoomss = async (dispatch, func) => {
 export const deleteRoom = async (id, func) => {
   try {
     await deleteDoc(doc(db, FIRESTORE_COLLECTIONS.All_ROOMS, id));
+    if (func) func();
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const deleteMyAds = async (id, func) => {
+  try {
+    await deleteDoc(doc(db, FIRESTORE_COLLECTIONS.AD_DATA, id));
     if (func) func();
   } catch (error) {
     console.log(error);

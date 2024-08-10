@@ -30,6 +30,7 @@ import {
   FIRESTORE_COLLECTIONS,
   furnishingOptions,
   Listedby,
+  SellingTypes,
   types,
 } from "../constants/data";
 import { showToast } from "../constants/functions";
@@ -56,7 +57,8 @@ const CreateSelling = ({ route }) => {
   } = useForm({
     defaultValues: {
       adTitle: "",
-      superBuilt: "",
+      description: "",
+      superBuiltArea: "",
       carpetArea: "",
       maintenance: "",
       totalFloors: "",
@@ -68,7 +70,8 @@ const CreateSelling = ({ route }) => {
   const onSubmit = async (data) => {
     const {
       adTitle,
-      superBuilt,
+      description,
+      superBuiltArea,
       carpetArea,
       maintenance,
       totalFloors,
@@ -89,21 +92,20 @@ const CreateSelling = ({ route }) => {
           const adData = {
             userId: user.id,
             adTitle,
+            description,
             id: "",
             maintenance,
             price,
-            superBuilt,
+            superBuiltArea,
             carpetArea,
             mobile,
             totalFloors,
             floorNo,
-            ...formdata, // Ensure initialFormdata is passed correctly
+            createdAt: new Date(),
+            ...formdata, 
           };
           const docRef = await addDoc(adCollectionRef, adData);
-
-          // Update the document with the auto-generated ID
           await updateDoc(docRef, { id: docRef.id });
-
           showToast("Ad posted successfully");
         });
       }
@@ -150,10 +152,10 @@ const CreateSelling = ({ route }) => {
         <AppLoader loading={loading} />
         {tabSelect !== true ? (
           <>
-            {["For Sale:House", "For Rent:House", "Lands & Plots"].map(
+            {SellingTypes.map(
               (item, i) => (
                 <Pressable key={i} onPress={() => settabSelect(true)}>
-                  <AppText>{item}</AppText>
+                  <AppText style={{marginVertical:6}}>{item}</AppText>
                 </Pressable>
               )
             )}
@@ -190,12 +192,6 @@ const CreateSelling = ({ route }) => {
                 setSelect={(value) => handleSelectChange("Listedby", value)}
                 data={Listedby}
                 type="Listed by"
-              />
-              <FormInput
-                control={control}
-                rules={rules}
-                placeholder={"Ad Title"}
-                name="adTitle"
               />
               <FormInput
                 control={control}
@@ -244,6 +240,19 @@ const CreateSelling = ({ route }) => {
                 setSelect={(value) => handleSelectChange("CarParking", value)}
                 data={CarParking}
                 type="Car Parking"
+              />
+              <FormInput
+                control={control}
+                rules={rules}
+                placeholder={"Ad Title"}
+                name="adTitle"
+              />
+              <FormInput
+                control={control}
+                rules={rules}
+                inputStyle={{}}
+                placeholder={"Add Description"}
+                name="description"
               />
               <FormInput
                 control={control}

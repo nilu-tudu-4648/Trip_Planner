@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View,Image } from 'react-native'
 import React from 'react'
 import { NotFound } from '../../assets'
+import { SIZES } from '../constants/theme'
 
 const NoDataFound = () => {
   return (
     <View
     style={{
       width: "100%",
-      height: 400,
+      height: SIZES.height*.8,
       alignItems: "center",
       justifyContent: "center",
       spaceBetween: 8,
@@ -15,10 +16,10 @@ const NoDataFound = () => {
   >
     <Image
       source={NotFound}
-      style={{ width: 128, height: 128, objectFit: "cover" }}
+      style={{ width: 100, height: 100, objectFit: "cover" }}
     />
     <Text
-      style={{ fontSize: 24, color: "#428288", fontWeight: "600" }}
+      style={{ fontSize: 20, color: "#428288", fontWeight: "600" }}
     >
       Oops... No Data Found
     </Text>

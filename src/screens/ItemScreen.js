@@ -17,22 +17,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
 import { useNavigation } from "@react-navigation/native";
-import { ITEM_KEYS } from "../constants/data";
 const ItemScreen = ({ route }) => {
   const { user } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
-
   const navigation = useNavigation();
   const data = route?.params?.param;
   const [liked, setliked] = useState(false);
-
   const addtoLikedPlace = async () => {
     setliked(!liked);
     try {
       const userLikedPlaces = user.likedPlaces || [];
-      const checkLiked = userLikedPlaces.includes(data.name)
-        ? userLikedPlaces.filter((item) => item !== data.name)
-        : [...userLikedPlaces, data.name];
+      const checkLiked = userLikedPlaces.includes(data.adTitle)
+        ? userLikedPlaces.filter((item) => item !== data.adTitle)
+        : [...userLikedPlaces, data.adTitle];
 
       const updatedUserData = { ...user, likedPlaces: checkLiked };
       await updateUser(updatedUserData, dispatch);
@@ -46,7 +43,7 @@ const ItemScreen = ({ route }) => {
       alert("Please insert correct WhatsApp number");
       return;
     }
-    const whatsAppMsg = `Hi ,I want this room name:${data.name}`;
+    const whatsAppMsg = `Hi ,I want this room name:${data}`;
     let url =
       "whatsapp://send?text=" + whatsAppMsg + "&phone=91" + mobileNumber;
     Linking.openURL(url)
@@ -65,19 +62,48 @@ const ItemScreen = ({ route }) => {
     },
     []
   );
-  const imageUrls = Object.values(data.roomPics).filter(
-    (url) => url.trim() !== ""
-  );
+  const imageUrls = data.roomPics
+    ? Object.values(data.roomPics).filter((url) => url.trim() !== "")
+    : []; // If roomPics is undefined, fallback to an empty array
+
+  // If no images are available, set the default image
+  const dataSource =
+    imageUrls.length > 0 ? imageUrls : [require("../../assets/roomImage.jpeg")];
+
+  const {
+    Bedroom,
+    type,
+    Bathroom,
+    Furnishing,
+    Listedby,
+    CarParking,
+    superBuiltArea,
+    carpetArea,
+    maintenance,
+    floorNo,
+  } = data;
+  const Datas={
+    Type: type,
+    Bedrooms: Bedroom,
+    Bathroom,
+    Furnishing,
+    "Listed by": Listedby,
+    "Car Parking": CarParking,
+    "Super Builtup area": superBuiltArea,
+    "Carpet Area (ft)": carpetArea,
+    Maintenance: maintenance,
+    "Total Floors": floorNo,
+  }
   return (
     <SafeAreaView className="flex-1 bg-white relative py-5">
-    <DrawerHeader user={user} iconColor={"black"}  />
+      <DrawerHeader user={user} iconColor={"black"} />
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-4">
         <View className="relative bg-white shadow-lg">
           <Carousel
             loop
             width={SIZES.width}
             height={SIZES.width / 1.2}
-            data={imageUrls}
+            data={dataSource}
             scrollAnimationDuration={1000}
             renderItem={({ item, index }) => (
               <View
@@ -88,7 +114,11 @@ const ItemScreen = ({ route }) => {
                 }}
               >
                 <Image
-                  source={{ uri: item }}
+                  source={
+                    typeof item === "string" && item.startsWith("http")
+                      ? { uri: item }
+                      : item // Local image
+                  }
                   style={{
                     width: "100%",
                     height: "100%",
@@ -103,24 +133,25 @@ const ItemScreen = ({ route }) => {
         <View className="mt-6">
           <View className="flex-row justify-between">
             <Text className="text-[black] text-[26px] font-bold">
-              ₹{data?.rentPrice}
+              ₹{data?.price}
             </Text>
-            <TouchableOpacity
-              onPress={() => addtoLikedPlace()}
-              className="w-10 h-10 rounded-md items-center justify-center"
-            >
-              <AntDesign
-                name={
-                  user.likedPlaces?.includes(data.name) ? "heart" : "hearto"
-                }
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
+            {!data.ads && (
+              <TouchableOpacity
+                onPress={() => addtoLikedPlace()}
+                className="w-10 h-10 rounded-md items-center justify-center"
+              >
+                <AntDesign
+                  name={
+                    user?.likedPlaces?.includes(data.adTitle)
+                      ? "heart"
+                      : "hearto"
+                  }
+                  size={24}
+                  color="black"
+                />
+              </TouchableOpacity>
+            )}
           </View>
-          <Text className="text-[black] text-[16px]">
-            Sale!!! 2bhk fully furnished flat for sale at just 50 lakhs
-          </Text>
           <View
             style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
           />
@@ -134,11 +165,11 @@ const ItemScreen = ({ route }) => {
           style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
         />
         <Text className="text-[#515151] font-bold text-[22px]">Details</Text>
-        {ITEM_KEYS.map((item) => (
-          <View key={item.key} className="flex-row justify-between">
-            <Text className="my-1">{item.key}</Text>
+        {Object.keys(Datas).map((item) => (
+          <View key={item} className="flex-row justify-between">
+            <Text className="my-1">{item}</Text>
             <View>
-              <Text>{item.value}</Text>
+              <Text>{Datas[item]}</Text>
             </View>
           </View>
         ))}
