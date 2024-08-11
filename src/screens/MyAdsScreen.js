@@ -1,8 +1,4 @@
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { AppLoader, DrawerHeader, NoDataFound } from "../components";
 import { useDispatch } from "react-redux";
@@ -16,9 +12,9 @@ const MyAdsScreen = ({ route }) => {
   const [adsData, setadsData] = useState([]);
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
-  const getData = ()=>getMyAdsData( setIsLoading, user,setadsData);
+  const getData = () => getMyAdsData(setIsLoading, user, setadsData);
   useEffect(() => {
-    getData()
+    getData();
   }, [dispatch]);
 
   const RoomComponent = ({ user }) => {
@@ -49,7 +45,7 @@ const MyAdsScreen = ({ route }) => {
                     imageSrc={imageSrc}
                     title={data?.name}
                     location={data?.address}
-                    data={{...data,ads:true}}
+                    data={{ ...data, ads: true }}
                     func={setQuery}
                     getData={getData}
                   />

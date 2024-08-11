@@ -11,7 +11,7 @@ import { NAVIGATION } from "./src/constants/routes";
 import { AppButton, } from "./src/components";
 import { Entypo } from "@expo/vector-icons";
 const DrawerItems = ({ navigation }) => {
-  const { user,myAds } = useSelector((state) => state.entities.localReducer);
+  const { user,myAds,allAds } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
   return (
     <DrawerContentScrollView
@@ -46,7 +46,7 @@ const DrawerItems = ({ navigation }) => {
           {dashboardCards.map((item, i) => (
             <TouchableOpacity
               key={i}
-              onPress={() => navigation.navigate(item.navigation,{user,myAds})}
+              onPress={() => navigation.navigate(item.navigation,{user,myAds,allAds})}
               style={styles.drawerCards}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -78,14 +78,13 @@ const DrawerItems = ({ navigation }) => {
           }}
         >
           <AppText size={1.5} color={COLORS.darkblue}>
-            1.0.1
+            1.0.0
           </AppText>
           <AppButton
             title={"Logout"}
             style={{
               width: "60%",
               height: SIZES.h1 * 1.1,
-              borderRadius: SIZES.base,
             }}
             onPress={() => {
               navigation.closeDrawer();

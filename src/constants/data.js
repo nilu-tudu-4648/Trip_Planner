@@ -38,7 +38,7 @@ export const ITEM_KEYS = [
   {key:'Floor No',value:'3'},
   {key:'Project Name',value:'Anand Moyee Tower'},
 ]
-export const SellingTypes=["For Sale:House", "For Rent:House", "Lands & Plots"]
+export const SellingTypes=["For Sale:House", "For Rent:House"]
 export const types = ["Apartments", "Builder Floors", "Houses & Villas"];
 export const furnishingOptions = ["Furnished", "Semi-furnished", "Unfurnished"];
 export const bedroomData = ["1", "2", "3", "4", "4+"];

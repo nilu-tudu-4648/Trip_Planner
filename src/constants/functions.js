@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setAllRooms, setLikedRoomForUser, setLoginUser, setMyAds } from "../store/localReducer";
+import { setAllAds, setAllRooms, setLoginUser } from "../store/localReducer";
 import { ToastAndroid } from "react-native";
 import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import {
@@ -70,33 +70,33 @@ export function showToast(msg) {
 
 //api calls
 
-export async function getRoomsDataFunc(dispatch,setMainData, setIsLoading, user) {
+export async function getRoomsDataFunc(dispatch, setMainData, setIsLoading, user) {
   try {
-    setIsLoading(true); // Set loading state to true when fetching data
+    // Start loading
+    if (setIsLoading) setIsLoading(true);
+
+    // Fetch data from Firestore collection
     const roomsCollectionRef = collection(db, FIRESTORE_COLLECTIONS.AD_DATA);
     const querySnapshot = await getDocs(roomsCollectionRef);
-    const rooms = [];
 
-    querySnapshot.forEach((doc) => {
-      // For each document, push its data into the rooms array
-      rooms.push({ id: doc.id, ...doc.data() });
-    });
+    // Map through documents and create a rooms array
+    const rooms = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Filter rooms that are not booked
-    setMainData(rooms.filter((item) => item.booked !== "true"));
-
-    if (user && Array.isArray(user.likedPlaces)) {
-      const likedData = rooms.filter((room) => user.likedPlaces.includes(room.adTitle));
-      dispatch(setLikedRoomForUser(likedData))
-    } else {
-      // setLikedData([]); // Set to empty array if user.likedPlaces is undefined or not an array
+    // Filter out booked rooms and update the main data state
+    if (setMainData) {
+      const availableRooms = rooms.filter(room => room.booked !== "true");
+      setMainData(availableRooms);
+      dispatch(setAllAds(availableRooms))
     }
+
   } catch (error) {
     console.error("Error fetching rooms:", error);
   } finally {
-    setIsLoading(false); // Ensure loading state is set to false even in case of error
+    // Stop loading
+    if (setIsLoading) setIsLoading(false);
   }
 }
+
 
 export async function getMyAdsData( setIsLoading, user,setadsData) {
   try {

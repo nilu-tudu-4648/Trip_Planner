@@ -14,7 +14,7 @@ import { AppButton, DrawerHeader } from "../components";
 import Carousel from "react-native-reanimated-carousel";
 import { SIZES } from "../constants/theme";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../constants/functions";
+import { getRoomsDataFunc, updateUser } from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
 import { useNavigation } from "@react-navigation/native";
 const ItemScreen = ({ route }) => {
@@ -30,9 +30,11 @@ const ItemScreen = ({ route }) => {
       const checkLiked = userLikedPlaces.includes(data.adTitle)
         ? userLikedPlaces.filter((item) => item !== data.adTitle)
         : [...userLikedPlaces, data.adTitle];
-
+      const setMainData =  ()=>{};
+      const setIsLoading = ()=>{};
       const updatedUserData = { ...user, likedPlaces: checkLiked };
       await updateUser(updatedUserData, dispatch);
+      getRoomsDataFunc(dispatch, setMainData, setIsLoading, user);
     } catch (error) {
       console.log(error);
     }
@@ -82,7 +84,7 @@ const ItemScreen = ({ route }) => {
     maintenance,
     floorNo,
   } = data;
-  const Datas={
+  const Datas = {
     Type: type,
     Bedrooms: Bedroom,
     Bathroom,
@@ -93,7 +95,7 @@ const ItemScreen = ({ route }) => {
     "Carpet Area (ft)": carpetArea,
     Maintenance: maintenance,
     "Total Floors": floorNo,
-  }
+  };
   return (
     <SafeAreaView className="flex-1 bg-white relative py-5">
       <DrawerHeader user={user} iconColor={"black"} />

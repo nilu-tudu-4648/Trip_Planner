@@ -5,8 +5,8 @@ const initialState = {
   user: null,
   userLoggedIn: "false",
   allRooms: [],
-  likedRooms: [],
   myAds: [],
+  allAds:[]
   //admin
 };
 
@@ -26,8 +26,8 @@ const localReducer = createSlice({
     setAllRooms: (localReducer, action) => {
       localReducer.allRooms = action.payload;
     },
-    setLikedRoomForUser: (localReducer, action) => {
-      localReducer.likedRooms = action.payload;
+    setAllAds: (localReducer, action) => {
+      localReducer.allAds = action.payload;
     },
     setMyAds: (localReducer, action) => {
       localReducer.myAds = action.payload;
@@ -47,8 +47,8 @@ export const {
   setLoginUser,
   checkUserLogin,
   setAllRooms,
-  setLikedRoomForUser,
   setMyAds,
+  setAllAds
 } = localReducer.actions;
 export const getunloadingData = (data) =>
   apiCallBegan({
