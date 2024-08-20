@@ -1,5 +1,6 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import React from "react";
+import AppText from "./AppText";
 
 const MenuContainer = ({ title, imageSrc, type, setType }) => {
   const handlePress = () => {
@@ -17,7 +18,7 @@ const MenuContainer = ({ title, imageSrc, type, setType }) => {
       >
         <Image source={imageSrc} className="w-full h-full object-contain" />
       </View>
-      <Text className="text-[#00BCC9] text-xl font-semibold">{title}</Text>
+      <AppText className="text-[#00BCC9] text-xl font-semibold">{title}</AppText>
     </TouchableOpacity>
   );
 };

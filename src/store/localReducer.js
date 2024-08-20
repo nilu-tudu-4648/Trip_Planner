@@ -3,8 +3,11 @@ import { apiCallBegan } from "./api";
 const initialState = {
   loader: false,
   user: null,
-  userLoggedIn: 'false',
-  unloadingData: [],
+  userLoggedIn: "false",
+  allRooms: [],
+  myAds: [],
+  allAds:[]
+  //admin
 };
 
 const localReducer = createSlice({
@@ -17,12 +20,17 @@ const localReducer = createSlice({
     localReducerDataRequestFailed: (localReducer, action) => {
       localReducer.loader = false;
     },
-    getunloadingDataRecieved: (localReducer, action) => {
-      localReducer.loader = false;
-      localReducer.unloadingData = action.payload;
-    },
     setLoginUser: (localReducer, action) => {
       localReducer.user = action.payload;
+    },
+    setAllRooms: (localReducer, action) => {
+      localReducer.allRooms = action.payload;
+    },
+    setAllAds: (localReducer, action) => {
+      localReducer.allAds = action.payload;
+    },
+    setMyAds: (localReducer, action) => {
+      localReducer.myAds = action.payload;
     },
     checkUserLogin: (userReducer, action) => {
       userReducer.loading = false;
@@ -31,20 +39,22 @@ const localReducer = createSlice({
   },
 });
 
-const {
-  localReducerDataRequestFailed,
-  localReducerDataRequested,
-  getunloadingDataRecieved,
-} = localReducer.actions;
+const { localReducerDataRequestFailed, localReducerDataRequested } =
+  localReducer.actions;
 
 export default localReducer.reducer;
-export const { setLoginUser, checkUserLogin, } = localReducer.actions
+export const {
+  setLoginUser,
+  checkUserLogin,
+  setAllRooms,
+  setMyAds,
+  setAllAds
+} = localReducer.actions;
 export const getunloadingData = (data) =>
   apiCallBegan({
-    method: 'post',
+    method: "post",
     data,
     onStart: localReducerDataRequested.type,
-    onSuccess: getunloadingDataRecieved.type,
+    // onSuccess: getunloadingDataRecieved.type,
     onError: localReducerDataRequestFailed.type,
   });
-

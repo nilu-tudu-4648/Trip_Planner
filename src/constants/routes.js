@@ -1,11 +1,19 @@
 export const NAVIGATION = {
   APP_NAVIGATOR: "AppNavi",
   LOGIN: "Login",
+  SIGN_UP: "SignUp",
   HOME: "Home",
   DISCOVER: "Discover",
+  PROFILE:'Profile',
   ITEMSCREEN: "ItemScreen",
+  FAVORITES: "Favorites",
   ITINERARY: "CreateItinerary",
-  prod: {
-    url: `http://baapi.inland.in/V1/BAAPI.svc/BAAPI`, // prod
-  },
+  CREATE_SELLING: "CreateSelling",
+  MY_ADS: "MyAdsScreen",
+  SEARCH_SCREEN: "SearchScreen",
+  //admin
+  ADMIN_HOME:"AdminHome",
+  CREATE_ROOM:"CreateRoom",
+  ADMIN_ALL_ROOM:"AdminAllRooms"
 };
+

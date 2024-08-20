@@ -1,163 +1,239 @@
+import React, { useState } from "react";
 import {
   View,
-  Text,
   SafeAreaView,
   ScrollView,
   Image,
   TouchableOpacity,
+  BackHandler,
+  Linking,
 } from "react-native";
-import React from "react";
-import { useNavigation } from "@react-navigation/native";
-import { FontAwesome, FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
-import { AppButton, AppText } from "../components";
+import { AntDesign } from "@expo/vector-icons";
+import { AppButton, AppText, DrawerHeader } from "../components";
+import Carousel from "react-native-reanimated-carousel";
+import { SIZES } from "../constants/theme";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRoomsDataFunc,
+  updateUser,
+} from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
-
+import { useNavigation } from "@react-navigation/native";
+import { FIRESTORE_COLLECTIONS } from "../constants/data";
+import { db } from "../../firebaseConfig";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 const ItemScreen = ({ route }) => {
+  const { user } = useSelector((state) => state.entities.localReducer);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const data = route?.params?.param;
+  const [liked, setliked] = useState(false);
+  const [details, setdetails] = useState([]);
+  const addtoLikedPlace = async () => {
+    setliked(!liked);
+    try {
+      const userLikedPlaces = user.likedPlaces || [];
+      const checkLiked = userLikedPlaces.includes(data.adTitle)
+        ? userLikedPlaces.filter((item) => item !== data.adTitle)
+        : [...userLikedPlaces, data.adTitle];
+      const setMainData = () => {};
+      const setIsLoading = () => {};
+      const updatedUserData = { ...user, likedPlaces: checkLiked };
+      await updateUser(updatedUserData, dispatch);
+      getRoomsDataFunc(dispatch, setMainData, setIsLoading, user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const addDataToDB = async () => {
+    try {
+      const adCollectionRef = collection(
+        db,
+        FIRESTORE_COLLECTIONS.ITEM_LIKE_VIEWS
+      );
+      const docRef = doc(adCollectionRef, data.id);
+      const docSnap = await getDoc(docRef);
 
+      if (docSnap.exists()) {
+        await updateDoc(docRef, {
+          adTitle: arrayUnion(user.id),
+        });
+        setdetails(docSnap.data().adTitle.length);
+      } else {
+        const adData = {
+          adTitle: [user.id],
+        };
+        await setDoc(docRef, adData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  React.useEffect(() => {
+    addDataToDB();
+  }, [data]);
 
+  const mobileNumber = "9155186701";
+  const initiateWhatsApp = () => {
+    if (mobileNumber.length != 10) {
+      alert("Please insert correct WhatsApp number");
+      return;
+    }
+    const whatsAppMsg = `Hi ,I want this room name:${data}`;
+    let url =
+      "whatsapp://send?text=" + whatsAppMsg + "&phone=91" + mobileNumber;
+    Linking.openURL(url)
+      .then((data) => {
+        console.log("WhatsApp Opened");
+      })
+      .catch(() => {
+        alert("Make sure Whatsapp installed on your device");
+      });
+  };
+  BackHandler.addEventListener(
+    "hardwareBackPress",
+    () => {
+      navigation.navigate(NAVIGATION.DISCOVER);
+      return () => true;
+    },
+    []
+  );
+  const imageUrls = data.roomPics
+    ? Object.values(data.roomPics).filter((url) => url.trim() !== "")
+    : [];
+
+  const dataSource =
+    imageUrls.length > 0 ? imageUrls : [require("../../assets/roomImage.jpeg")];
+
+  const {
+    Bedroom,
+    type,
+    Bathroom,
+    Furnishing,
+    Listedby,
+    CarParking,
+    superBuiltArea,
+    carpetArea,
+    maintenance,
+    floorNo,
+  } = data;
+  const Datas = {
+    Type: type,
+    Bedrooms: Bedroom,
+    Bathroom,
+    Furnishing,
+    "Listed by": Listedby,
+    "Car Parking": CarParking,
+    "Super Builtup area": superBuiltArea,
+    "Carpet Area (ft)": carpetArea,
+    Maintenance: maintenance,
+    "Total Floors": floorNo,
+  };
   return (
-    <SafeAreaView className="flex-1 bg-white relative py-10">
-      <ScrollView className="flex-1 px-4">
+    <SafeAreaView className="flex-1 bg-white relative py-5">
+      <DrawerHeader user={user} iconColor={"black"} />
+      <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-4">
         <View className="relative bg-white shadow-lg">
-          <Image
-            source={{
-              uri: data?.photo?.images?.large?.url
-                ? data?.photo?.images?.large?.url
-                : "https://cdn.pixabay.com/photo/2015/10/30/12/22/eat-1014025_1280.jpg",
-            }}
-            className="w-full h-72 object-cover rounded-2xl"
-          />
-
-          <View className="absolute flex-row inset-x-0 top-5 justify-between px-6">
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Discover")}
-              className="w-10 h-10 rounded-md items-center justify-center bg-white"
-            >
-              <FontAwesome5 name="chevron-left" size={24} color="#06B2BE" />
-            </TouchableOpacity>
-
-            <TouchableOpacity className="w-10 h-10 rounded-md items-center justify-center bg-[#06B2BE]">
-              <FontAwesome5 name="heartbeat" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
-
-          <View className="absolute flex-row inset-x-0 bottom-5 justify-between px-6">
-            <View className="flex-row space-x-2 items-center">
-              <AppText className="text-[12px] font-bold text-gray-100">
-                {data?.price_level}
-              </AppText>
-              <Text className="text-[12px] font-bold text-red-100">
-                {data?.price}
-              </Text>
-            </View>
-
-            <View className="px-2 py-1 rounded-md bg-teal-100">
-              <Text>{data?.open_now_text}</Text>
-            </View>
-          </View>
-        </View>
-
-        <View className="mt-6">
-          <Text className="text-[#428288] text-[24px] font-bold">
-            {data?.name}
-          </Text>
-          <View className="flex-row items-center space-x-2 mt-2">
-            <FontAwesome name="map-marker" size={25} color="#8C9EA6" />
-            <Text className="text-[#8C9EA6] text-[20px] font-bold">
-              {data?.location_string}
-            </Text>
-          </View>
-        </View>
-
-        <View className="mt-4 flex-row items-center justify-between">
-          {data?.rating && (
-            <View className=" flex-row items-center space-x-2">
-              <View className="w-12 h-12 rounded-2xl bg-red-100 items-center justify-center shadow-md">
-                <FontAwesome name="star" size={24} color="#D58574" />
-              </View>
-              <View>
-                <Text className="text-[#515151]">{data?.rating}</Text>
-                <Text className="text-[#515151]">Ratings</Text>
-              </View>
-            </View>
-          )}
-
-          {data?.price_level && (
-            <View className=" flex-row items-center space-x-2">
-              <View className="w-12 h-12 rounded-2xl bg-red-100 items-center justify-center shadow-md">
-                <MaterialIcons name="attach-money" size={24} color="black" />
-              </View>
-              <View>
-                <Text className="text-[#515151]">{data?.price_level}</Text>
-                <Text className="text-[#515151]">Price Level</Text>
-              </View>
-            </View>
-          )}
-
-          {data?.bearing && (
-            <View className=" flex-row items-center space-x-2">
-              <View className="w-12 h-12 rounded-2xl bg-red-100 items-center justify-center shadow-md">
-                <FontAwesome5 name="map-signs" size={24} color="black" />
-              </View>
-              <View>
-                <Text className="text-[#515151] capitalize">
-                  {data?.bearing}
-                </Text>
-                <Text className="text-[#515151]">Bearing</Text>
-              </View>
-            </View>
-          )}
-        </View>
-
-        <TouchableOpacity onPress={() => navigation.navigate(NAVIGATION.ITINERARY, { data })} 
-        className='flex-row items-center self-end my-2 justify-center'>
-          <AppText className="text-[#428288] text-[18px] font-bold right-1">Create Itinerary</AppText>
-          <Ionicons name="create" size={24} color="black" />
-        </TouchableOpacity>
-
-        {data?.description && (
-          <Text className=" tracking-wide text-[16px] font-semibold text-[#97A6AF]">
-            {data?.description}
-          </Text>
-        )}
-
-        {data?.cuisine && (
-          <View className="flex-row gap-2 items-center justify-start flex-wrap mt-4">
-            {data?.cuisine.map((n) => (
-              <TouchableOpacity
-                key={n.key}
-                className="px-2 py-1 rounded-md bg-emerald-100"
+          <Carousel
+            loop
+            width={SIZES.width}
+            height={SIZES.width / 1.2}
+            data={dataSource}
+            scrollAnimationDuration={1000}
+            renderItem={({ item, index }) => (
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                }}
               >
-                <Text>{n.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        <View className=" space-y-2 mt-4 bg-gray-100 rounded-2xl px-4 py-2">
-          {data?.phone && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome name="phone" size={24} color="#428288" />
-              <Text className="text-lg">{data?.phone}</Text>
-            </View>
-          )}
-          {data?.email && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome name="envelope" size={24} color="#428288" />
-              <Text className="text-lg">{data?.email}</Text>
-            </View>
-          )}
-          {data?.address && (
-            <View className="items-center flex-row space-x-6">
-              <FontAwesome name="map-pin" size={24} color="#428288" />
-              <Text className="text-lg">{data?.address}</Text>
-            </View>
-          )}
-          <AppButton title={'Book Now'} />
+                <Image
+                  source={
+                    typeof item === "string" && item.startsWith("http")
+                      ? { uri: item }
+                      : item // Local image
+                  }
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    resizeMode: "stretch",
+                  }}
+                />
+              </View>
+            )}
+          />
         </View>
+        {/* Details Section */}
+        <View className="mt-6">
+          <View className="flex-row justify-between">
+            <AppText className="text-[black] text-[26px] font-bold">
+              ₹{data?.price}
+            </AppText>
+            {!data.ads && (
+              <TouchableOpacity
+                onPress={() => addtoLikedPlace()}
+                className="w-10 h-10 rounded-md items-center justify-center"
+              >
+                <AntDesign
+                  name={
+                    user?.likedPlaces?.includes(data.adTitle)
+                      ? "heart"
+                      : "hearto"
+                  }
+                  size={24}
+                  color="black"
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+          <View
+            style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
+          />
+          <View className="flex-row items-center space-x-2 my-1">
+            <AppText className="text-[#8C9EA6] text-[15px] font-bold">
+              {data?.address}
+            </AppText>
+            <AppText className="text-[#8C9EA6] text-[15px] font-bold">
+              {details? details : "1"} views
+            </AppText>
+          </View>
+        </View>
+        <View
+          style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
+        />
+        <AppText className="text-[#515151] font-bold text-[22px]">Details</AppText>
+        {Object.keys(Datas).map((item) => (
+          <View key={item} className="flex-row justify-between">
+            <AppText className="my-1">{item}</AppText>
+            <View>
+              <AppText>{Datas[item]}</AppText>
+            </View>
+          </View>
+        ))}
+        <AppText className="text-[#515151] font-bold text-[22px]">
+          Description
+        </AppText>
+        {data?.description && (
+          <AppText className="tracking-wide text-[16px] font-semibold text-[#97A6AF]">
+            {data?.description}
+          </AppText>
+        )}
       </ScrollView>
+      <View className="space-y-2 rounded-2xl px-4 py-2">
+        <AppButton
+          disabled={data.booked === "true"}
+          onPress={initiateWhatsApp}
+          title={data.booked === "true" ? "Already Booked" : "Book Now"}
+        />
+      </View>
     </SafeAreaView>
   );
 };
