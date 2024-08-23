@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   SafeAreaView,
   ScrollView,
   Image,
@@ -10,19 +9,33 @@ import {
   Linking,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { AppButton, DrawerHeader } from "../components";
+import { AppButton, AppText, DrawerHeader } from "../components";
 import Carousel from "react-native-reanimated-carousel";
 import { SIZES } from "../constants/theme";
 import { useDispatch, useSelector } from "react-redux";
-import { getRoomsDataFunc, updateUser } from "../constants/functions";
+import {
+  getRoomsDataFunc,
+  updateUser,
+} from "../constants/functions";
 import { NAVIGATION } from "../constants/routes";
 import { useNavigation } from "@react-navigation/native";
+import { FIRESTORE_COLLECTIONS } from "../constants/data";
+import { db } from "../../firebaseConfig";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 const ItemScreen = ({ route }) => {
   const { user } = useSelector((state) => state.entities.localReducer);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const data = route?.params?.param;
   const [liked, setliked] = useState(false);
+  const [details, setdetails] = useState([]);
   const addtoLikedPlace = async () => {
     setliked(!liked);
     try {
@@ -30,8 +43,8 @@ const ItemScreen = ({ route }) => {
       const checkLiked = userLikedPlaces.includes(data.adTitle)
         ? userLikedPlaces.filter((item) => item !== data.adTitle)
         : [...userLikedPlaces, data.adTitle];
-      const setMainData =  ()=>{};
-      const setIsLoading = ()=>{};
+      const setMainData = () => {};
+      const setIsLoading = () => {};
       const updatedUserData = { ...user, likedPlaces: checkLiked };
       await updateUser(updatedUserData, dispatch);
       getRoomsDataFunc(dispatch, setMainData, setIsLoading, user);
@@ -39,6 +52,34 @@ const ItemScreen = ({ route }) => {
       console.log(error);
     }
   };
+  const addDataToDB = async () => {
+    try {
+      const adCollectionRef = collection(
+        db,
+        FIRESTORE_COLLECTIONS.ITEM_LIKE_VIEWS
+      );
+      const docRef = doc(adCollectionRef, data.id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        await updateDoc(docRef, {
+          adTitle: arrayUnion(user.id),
+        });
+        setdetails(docSnap.data().adTitle.length);
+      } else {
+        const adData = {
+          adTitle: [user.id],
+        };
+        await setDoc(docRef, adData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  React.useEffect(() => {
+    addDataToDB();
+  }, [data]);
+
   const mobileNumber = "9155186701";
   const initiateWhatsApp = () => {
     if (mobileNumber.length != 10) {
@@ -66,9 +107,8 @@ const ItemScreen = ({ route }) => {
   );
   const imageUrls = data.roomPics
     ? Object.values(data.roomPics).filter((url) => url.trim() !== "")
-    : []; // If roomPics is undefined, fallback to an empty array
+    : [];
 
-  // If no images are available, set the default image
   const dataSource =
     imageUrls.length > 0 ? imageUrls : [require("../../assets/roomImage.jpeg")];
 
@@ -134,9 +174,9 @@ const ItemScreen = ({ route }) => {
         {/* Details Section */}
         <View className="mt-6">
           <View className="flex-row justify-between">
-            <Text className="text-[black] text-[26px] font-bold">
+            <AppText className="text-[black] text-[26px] font-bold">
               ₹{data?.price}
-            </Text>
+            </AppText>
             {!data.ads && (
               <TouchableOpacity
                 onPress={() => addtoLikedPlace()}
@@ -158,30 +198,33 @@ const ItemScreen = ({ route }) => {
             style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
           />
           <View className="flex-row items-center space-x-2 my-1">
-            <Text className="text-[#8C9EA6] text-[15px] font-bold">
+            <AppText className="text-[#8C9EA6] text-[15px] font-bold">
               {data?.address}
-            </Text>
+            </AppText>
+            <AppText className="text-[#8C9EA6] text-[15px] font-bold">
+              {details? details : "1"} views
+            </AppText>
           </View>
         </View>
         <View
           style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
         />
-        <Text className="text-[#515151] font-bold text-[22px]">Details</Text>
+        <AppText className="text-[#515151] font-bold text-[22px]">Details</AppText>
         {Object.keys(Datas).map((item) => (
           <View key={item} className="flex-row justify-between">
-            <Text className="my-1">{item}</Text>
+            <AppText className="my-1">{item}</AppText>
             <View>
-              <Text>{Datas[item]}</Text>
+              <AppText>{Datas[item]}</AppText>
             </View>
           </View>
         ))}
-        <Text className="text-[#515151] font-bold text-[22px]">
+        <AppText className="text-[#515151] font-bold text-[22px]">
           Description
-        </Text>
+        </AppText>
         {data?.description && (
-          <Text className="tracking-wide text-[16px] font-semibold text-[#97A6AF]">
+          <AppText className="tracking-wide text-[16px] font-semibold text-[#97A6AF]">
             {data?.description}
-          </Text>
+          </AppText>
         )}
       </ScrollView>
       <View className="space-y-2 rounded-2xl px-4 py-2">

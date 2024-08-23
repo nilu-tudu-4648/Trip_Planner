@@ -9,7 +9,7 @@ import { setLoginUser } from "../store/localReducer";
 import {
   LoginScreen,
   Discover,
-  HomeScreen,
+  SearchScreen,
   ItemScreen,
   CreateItinerary,
   SignUpScreen,
@@ -93,6 +93,11 @@ function AppNavigator() {
             options={options}
             name={NAVIGATION.ITEMSCREEN}
             component={ItemScreen}
+          />
+          <Stack.Screen
+            options={options}
+            name={NAVIGATION.SEARCH_SCREEN}
+            component={SearchScreen}
           />
           <Stack.Screen
             options={options}

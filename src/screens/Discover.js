@@ -1,4 +1,4 @@
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import ItemCarDontainer from "../components/ItemCarDontainer";
 import {
@@ -10,10 +10,13 @@ import {
 import AppSearchBar from "../components/AppSearchBar";
 import { getRoomsDataFunc } from "../constants/functions";
 import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { NAVIGATION } from "../constants/routes";
 
 const Discover = ({ route }) => {
   const { user } = route.params;
   const dispatch = useDispatch();
+  const navigation = useNavigation()
   const [isLoading, setIsLoading] = useState(false);
   const [mainData, setMainData] = useState([]);
   const [query, setQuery] = useState("");
@@ -91,13 +94,14 @@ const Discover = ({ route }) => {
   return (
     <View className="flex-1 bg-white relative my-5">
       <DrawerHeader user={user} iconColor={"black"} />
-      <View className="m-1">
+      <TouchableOpacity onPress={()=>navigation.navigate(NAVIGATION.SEARCH_SCREEN,{mainData})} className="m-1">
         <AppSearchBar
-          onChangeSearch={(text) => setQuery(text)}
-          searchQuery={query}
+          editable={false}
+          // onChangeSearch={(text) => setQuery(text)}
+          // searchQuery={query}
           placeholder={"For Sale:Houses & Apartments near Ranchi"}
         />
-      </View>
+      </TouchableOpacity>
       <ChipComponent setSortCriteria={setSortCriteria} />
       {isLoading ? <AppLoader loading={isLoading} /> : <AllRooms />}
     </View>

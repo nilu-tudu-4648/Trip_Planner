@@ -1,12 +1,12 @@
 import {
   View,
-  Text,
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import React from "react";
 import * as Animatable from "react-native-animatable";
 import { HeroImage } from "../../assets";
+import { AppText } from "../components";
 
 const HomeScreen = ({navigation}) => {
 
@@ -14,10 +14,10 @@ const HomeScreen = ({navigation}) => {
     <SafeAreaView className="bg-white flex-1 relative">
       {/* Second Section */}
       <View className="px-6 mt-8 space-y-3">
-        <Text className="text-[#3C6072] text-[42px]">Hey Buddy! welcome to</Text>
-        <Text className="text-[#00BCC9] text-[30px] font-bold">
+        <AppText className="text-[#3C6072] text-[42px]">Hey Buddy! welcome to</AppText>
+        <AppText className="text-[#00BCC9] text-[30px] font-bold">
           Ranchi ka apna Room Booking Platform
-        </Text>
+        </AppText>
       </View>
 
       {/* Circle Section */}
@@ -43,7 +43,7 @@ const HomeScreen = ({navigation}) => {
             iterationCount={"infinite"}
             className="w-20 h-20 items-center justify-center rounded-full bg-[#00BCC9]"
           >
-            <Text className="text-gray-50 text-[36px] font-semibold">Go</Text>
+            <AppText className="text-gray-50 text-[36px] font-semibold">Go</AppText>
           </Animatable.View>
         </TouchableOpacity>
       </View>

@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { AppLoader, DrawerHeader, NoDataFound } from "../components";
+import { AppLoader, AppView, DrawerHeader, NoDataFound } from "../components";
 import { useDispatch } from "react-redux";
 
 import ItemCarDontainer from "../components/ItemCarDontainer";

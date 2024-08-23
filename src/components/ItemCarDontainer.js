@@ -1,10 +1,11 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Image, Pressable } from "react-native";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NAVIGATION } from "../constants/routes";
 import { COLORS } from "../constants/theme";
 import { deleteMyAds } from "../constants/functions";
+import AppText from "./AppText";
 
 const ItemCarDontainer = ({
   user,
@@ -15,12 +16,14 @@ const ItemCarDontainer = ({
   func,
 }) => {
   const navigation = useNavigation();
-const formatDate = (timestamp) => {
-  const date = new Date(timestamp.seconds * 1000); // Convert seconds to milliseconds
-  const options = { day: '2-digit', month: 'short' }; // Format options
-  const formattedDate = date.toLocaleDateString('en-US', options).toUpperCase(); // Convert to "12 JUL" format
-  return formattedDate;
-};
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp.seconds * 1000); // Convert seconds to milliseconds
+    const options = { day: "2-digit", month: "short" }; // Format options
+    const formattedDate = date
+      .toLocaleDateString("en-US", options)
+      .toUpperCase(); // Convert to "12 JUL" format
+    return formattedDate;
+  };
   return (
     <Pressable
       onPress={() => {
@@ -36,30 +39,40 @@ const formatDate = (timestamp) => {
       <View style={styles.infoContainer}>
         <View>
           <View style={styles.header}>
-            <Text style={styles.priceText}>₹ {data?.price || data?.rentPrice}</Text>
+            <AppText style={styles.priceText}>
+              ₹ {data?.price || data?.rentPrice}
+            </AppText>
             {!data?.ads ? (
               <AntDesign
-                name={user?.likedPlaces?.includes(data?.adTitle) ? "heart" : "hearto"}
+                name={
+                  user?.likedPlaces?.includes(data?.adTitle)
+                    ? "heart"
+                    : "hearto"
+                }
                 size={24}
                 color="black"
               />
             ) : (
-              <MaterialIcons
-                onPress={() => deleteMyAds(data?.id, getData)}
-                name="delete"
-                size={24}
-                color={COLORS.red}
-              />
+              user?.admin === true && (
+                <MaterialIcons
+                  onPress={() => deleteMyAds(data?.id, getData)}
+                  name="delete"
+                  size={24}
+                  color={COLORS.red}
+                />
+              )
             )}
           </View>
-          <Text style={styles.subText}>{data.Bedroom}-bds-{data.Bathroom}ba-{data.carpetArea} ft²</Text>
-          <Text style={styles.grayText}>{data?.Furnishing}</Text>
+          <AppText style={styles.subText}>
+            {data.Bedroom}-bds-{data.Bathroom}ba-{data.carpetArea} ft²
+          </AppText>
+          <AppText style={styles.grayText}>{data?.Furnishing}</AppText>
         </View>
         <View style={styles.footer}>
-          <Text style={styles.grayText}>
+          <AppText style={styles.grayText}>
             {location?.length > 18 ? `${location.slice(0, 14)}..` : location}
-          </Text>
-          <Text style={styles.grayText}>{formatDate(data.createdAt)}</Text>
+          </AppText>
+          <AppText style={styles.grayText}>{formatDate(data.createdAt)}</AppText>
         </View>
       </View>
     </Pressable>
@@ -73,13 +86,13 @@ const styles = {
     width: "100%",
     height: 180,
     borderColor: "gray",
-    borderWidth: .5,
+    borderWidth: 0.5,
     padding: 6,
     backgroundColor: "white",
     marginVertical: 8,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderRadius:8
+    borderRadius: 8,
   },
   image: {
     width: "40%",
@@ -97,7 +110,7 @@ const styles = {
   },
   priceText: {
     color: "black",
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: "bold",
   },
   subText: {

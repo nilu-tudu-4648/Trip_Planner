@@ -1,6 +1,6 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
 import React from "react";
-import { DrawerHeader } from "../components";
+import { AppText, DrawerHeader } from "../components";
 import { useSelector } from "react-redux";
 import { NotFound } from "../../assets";
 import ItemCarDontainer from "../components/ItemCarDontainer";
@@ -43,9 +43,9 @@ const liked = allAds.filter((ite=>user.likedPlaces.includes(ite.adTitle)))
           ) : (
             <View className="w-full h-[400px] items-center space-y-8 justify-center">
               <Image source={NotFound} className=" w-32 h-32 object-cover" />
-              <Text className="text-1xl text-[#428288] font-semibold">
+              <AppText className="text-1xl text-[#428288] font-semibold">
                 Opps...No Data Found
-              </Text>
+              </AppText>
             </View>
           )}
         </View>

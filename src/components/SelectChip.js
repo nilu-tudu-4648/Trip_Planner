@@ -1,12 +1,13 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { Chip } from "react-native-paper";
 import { COLORS } from "../constants/theme";
+import AppText from "./AppText";
 
 const SelectChip = ({ selected, setSelect, data, type }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.typeText}>{type}</Text>
+      <AppText style={styles.typeText}>{type}</AppText>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         {data.map((item, i) => (
           <Chip
@@ -32,7 +33,6 @@ const styles = StyleSheet.create({
   },
   typeText: {
     fontSize: 16,
-    fontWeight: 'bold',
     marginVertical: 2,
   },
   chip: {

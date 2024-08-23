@@ -24,9 +24,9 @@ const FormInput = ({
             name={name}
             render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                 <>
+                <AppText size={1.7} style={{marginVertical:SIZES.base1,left:SIZES.paddingShort}}>{placeholder}</AppText>
                     <AppTextInput
                         onBlur={onBlur}
-                        placeholder={placeholder}
                         keyboardType={keyboardType}
                         onChangeText={onChange}
                         value={value}
@@ -44,8 +44,8 @@ const FormInput = ({
 const styles = StyleSheet.create({
     error: {
         color: 'red',
-        fontSize: SIZES.h7,
-        alignSelf: 'stretch'
+        fontSize: SIZES.h6,
+        left:SIZES.paddingShort
     }
 });
 

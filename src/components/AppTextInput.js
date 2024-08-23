@@ -17,6 +17,7 @@ const AppTextInput = ({
                 placeholder={placeholder}
                 style={[styles.textInput, inputStyle]}
                 onChangeText={onChangeText}
+                
                 keyboardType={keyboardType ? keyboardType : "default"}
                 {...otherProps}
             />

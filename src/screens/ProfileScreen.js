@@ -15,9 +15,13 @@ import {
   AppTextInput,
   AppView,
 } from "../components";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import { SIZES } from "../constants/theme";
-import { logoutUser, updateUser,saveMediaToStorage, showToast } from "../constants/functions";
+import {
+  updateUser,
+  saveMediaToStorage,
+  showToast,
+} from "../constants/functions";
 
 const ProfileScreen = () => {
   const { user } = useSelector((state) => state.entities.localReducer);
@@ -27,7 +31,7 @@ const ProfileScreen = () => {
     email: user.email || "",
     mobile: user.mobile || "",
   });
-  const [image, setimage] = useState('')
+  const [image, setimage] = useState("");
   const dispatch = useDispatch();
   const handleSubmit = async () => {
     try {
@@ -105,6 +109,12 @@ const ProfileScreen = () => {
               onChangeText={(text) =>
                 setinput({ ...input, email: text.trim() })
               }
+            />
+            <AppTextInput
+              placeholder={"Subscription"}
+              value={`Plan validity : ${ user.subscriptionInfo.split("|")[1]}`}
+              style={{ marginVertical: SIZES.base }}
+              editable={false}
             />
             <AppTextInput
               keyboardType={"numeric"}

@@ -9,6 +9,7 @@ const AppSearchBar = ({
     searchQuery,
     placeholder,
     onChangeSearch,
+    editable,
     style
 }) => {
     return (
@@ -17,15 +18,16 @@ const AppSearchBar = ({
             placeholderTextColor={COLORS.lightgray1}
             onChangeText={onChangeSearch}
             value={searchQuery}
-            inputStyle={{ fontSize: 12 }}
+            editable={editable}
+            inputStyle={{ fontSize: 14 }}
             style={[styles.container, style]}
         />
     )
 }
 const styles = StyleSheet.create({
     container: {
-        width: '99%',
-        borderWidth: .4,
+        width: '100%',
+        borderWidth: .7,
         borderColor: COLORS.gray,
         backgroundColor: COLORS.white,
         borderRadius: SIZES.base/2

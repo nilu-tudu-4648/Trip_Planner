@@ -23,15 +23,16 @@ import {
 } from "firebase/firestore";
 import { NAVIGATION } from "../constants/routes";
 import {
+  ALL_TYPES,
   BachelorsAllowed,
   bedroomData,
   CarParking,
+  ConstructionStatus,
   createSellingdata,
   FIRESTORE_COLLECTIONS,
   furnishingOptions,
   Listedby,
   SellingTypes,
-  types,
 } from "../constants/data";
 import { showToast } from "../constants/functions";
 import { useNavigation } from "@react-navigation/native";
@@ -39,7 +40,7 @@ import { useNavigation } from "@react-navigation/native";
 const CreateSelling = ({ route }) => {
   const { user } = route.params;
   const [loading, setloading] = useState(false);
-  const [tabSelect, settabSelect] = useState(false);
+  const [tabSelect, settabSelect] = useState("");
   const [formdata, setFormdata] = useState(createSellingdata);
 
   async function getAdExistsInDatabase(adTitle) {
@@ -57,6 +58,7 @@ const CreateSelling = ({ route }) => {
   } = useForm({
     defaultValues: {
       adTitle: "",
+      placeName: "",
       description: "",
       superBuiltArea: "",
       carpetArea: "",
@@ -102,7 +104,7 @@ const CreateSelling = ({ route }) => {
             totalFloors,
             floorNo,
             createdAt: new Date(),
-            ...formdata, 
+            ...formdata,
           };
           const docRef = await addDoc(adCollectionRef, adData);
           await updateDoc(docRef, { id: docRef.id });
@@ -119,7 +121,7 @@ const CreateSelling = ({ route }) => {
     }
   };
   const rules = {
-    required: "",
+    required: "This field is mandatory",
   };
   const handleSelectChange = (field, value) => {
     setFormdata((prevFormdata) => ({
@@ -128,13 +130,12 @@ const CreateSelling = ({ route }) => {
     }));
   };
   const navigation = useNavigation();
-
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
         if (tabSelect) {
-          settabSelect(false);
+          settabSelect("");
           return true; // Return true to prevent default back behavior
         }
         navigation.navigate(NAVIGATION.DISCOVER); // Adjust the route name if needed
@@ -145,102 +146,122 @@ const CreateSelling = ({ route }) => {
     return () => backHandler.remove(); // Clean up the event listener
   }, [tabSelect, settabSelect, navigation]);
   const phonePattern = /^[6-9][0-9]{9}$/;
+  const goBack = () =>
+    tabSelect !== "" ? settabSelect("") : navigation.goBack();
+  const selectedTypeData = ALL_TYPES[tabSelect];
+  const checkCondition =
+    tabSelect !== "PG & Guest Houses" &&
+    tabSelect !== "For Sale:Shops & Offices";
   return (
     <>
-      <AppHeader header={"Properties"} />
+      <AppHeader header={"Properties"} onPress={goBack} />
       <StyleView>
         <AppLoader loading={loading} />
-        {tabSelect !== true ? (
+        {tabSelect === "" ? (
           <>
-            {SellingTypes.map(
-              (item, i) => (
-                <Pressable key={i} onPress={() => settabSelect(true)}>
-                  <AppText style={{marginVertical:6}}>{item}</AppText>
-                </Pressable>
-              )
-            )}
+            {SellingTypes.map((item, i) => (
+              <Pressable key={i} onPress={() => settabSelect(item)}>
+                <AppText style={{ marginVertical: 6 }}>{item}</AppText>
+              </Pressable>
+            ))}
           </>
         ) : (
           <>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <SelectChip
-                selected={formdata.type}
-                setSelect={(value) => handleSelectChange("type", value)}
-                data={types}
-                type="Type*"
-              />
-              <SelectChip
-                selected={formdata.Bedroom}
-                setSelect={(value) => handleSelectChange("Bedroom", value)}
-                data={bedroomData}
-                type="Bedrooms"
-              />
-              <SelectChip
-                selected={formdata.Bathroom}
-                setSelect={(value) => handleSelectChange("Bathroom", value)}
-                data={bedroomData}
-                type="Bathrooms"
-              />
+              <AppText style={{ marginVertical: 6 }}>{tabSelect}</AppText>
+              {selectedTypeData && selectedTypeData.length > 0 && (
+                <SelectChip
+                  selected={formdata.type}
+                  setSelect={(value) => handleSelectChange("type", value)}
+                  data={selectedTypeData}
+                  type="Type*"
+                />
+              )}
+              {checkCondition && (
+                <>
+                  <SelectChip
+                    selected={formdata.Bedroom}
+                    setSelect={(value) => handleSelectChange("Bedroom", value)}
+                    data={bedroomData}
+                    type="Bedrooms"
+                  />
+                  <SelectChip
+                    selected={formdata.Bathroom}
+                    setSelect={(value) => handleSelectChange("Bathroom", value)}
+                    data={bedroomData}
+                    type="Bathrooms"
+                  />
+                </>
+              )}
               <SelectChip
                 selected={formdata.Furnishing}
                 setSelect={(value) => handleSelectChange("Furnishing", value)}
                 data={furnishingOptions}
                 type="Furnishing"
               />
+              {tabSelect === "For Sale:Shops & Offices" && (
+                <SelectChip
+                  selected={formdata.ConstructionStatus}
+                  setSelect={(value) =>
+                    handleSelectChange("ConstructionStatus", value)
+                  }
+                  data={ConstructionStatus}
+                  type="Construction Status"
+                />
+              )}
               <SelectChip
                 selected={formdata.Listedby}
                 setSelect={(value) => handleSelectChange("Listedby", value)}
                 data={Listedby}
                 type="Listed by"
               />
-              <FormInput
-                control={control}
-                rules={rules}
-                placeholder={"Super Builtup area(ft)"}
-                name="superBuiltArea"
-              />
-              <FormInput
-                control={control}
-                rules={rules}
-                placeholder={"Carpet Area(ft)"}
-                name="carpetArea"
-              />
-
-              <SelectChip
-                selected={formdata.BachelorsAllowed}
-                setSelect={(value) =>
-                  handleSelectChange("BachelorsAllowed", value)
-                }
-                data={BachelorsAllowed}
-                type="Bachelors Allowed"
-              />
-
-              <FormInput
-                control={control}
-                rules={rules}
-                placeholder={"Maintenance(Monthly)"}
-                name="maintenance"
-              />
-              <FormInput
-                control={control}
-                rules={rules}
-                keyboardType={"numeric"}
-                placeholder={"Total Floors"}
-                name="totalFloors"
-              />
-              <FormInput
-                control={control}
-                rules={rules}
-                keyboardType={"numeric"}
-                placeholder={"Floor No"}
-                name="floorNo"
-              />
-              <SelectChip
-                selected={formdata.CarParking}
-                setSelect={(value) => handleSelectChange("CarParking", value)}
-                data={CarParking}
-                type="Car Parking"
-              />
+              {checkCondition && (
+                <>
+                  <FormInput
+                    control={control}
+                    placeholder={"Super Builtup area(ft)"}
+                    name="superBuiltArea"
+                  />
+                  <FormInput
+                    control={control}
+                    placeholder={"Carpet Area(ft)"}
+                    name="carpetArea"
+                  />
+                  <SelectChip
+                    selected={formdata.BachelorsAllowed}
+                    setSelect={(value) =>
+                      handleSelectChange("BachelorsAllowed", value)
+                    }
+                    data={BachelorsAllowed}
+                    type="Bachelors Allowed"
+                  />
+                  <FormInput
+                    control={control}
+                    placeholder={"Maintenance(Monthly)"}
+                    name="maintenance"
+                  />
+                  <FormInput
+                    control={control}
+                    keyboardType={"numeric"}
+                    placeholder={"Total Floors"}
+                    name="totalFloors"
+                  />
+                  <FormInput
+                    control={control}
+                    keyboardType={"numeric"}
+                    placeholder={"Floor No"}
+                    name="floorNo"
+                  />
+                </>
+              )}
+              {tabSelect !== "Lands & Plots" && (
+                <SelectChip
+                  selected={formdata.CarParking}
+                  setSelect={(value) => handleSelectChange("CarParking", value)}
+                  data={CarParking}
+                  type="Car Parking"
+                />
+              )}
               <FormInput
                 control={control}
                 rules={rules}
@@ -259,6 +280,12 @@ const CreateSelling = ({ route }) => {
                 rules={rules}
                 placeholder={"Price"}
                 name="price"
+              />
+              <FormInput
+                control={control}
+                rules={rules}
+                placeholder={"Place"}
+                name="placeName"
               />
               <FormInput
                 control={control}
