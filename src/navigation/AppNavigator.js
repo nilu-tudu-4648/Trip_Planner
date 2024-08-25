@@ -17,6 +17,7 @@ import {
   FavoritesScreen,
   CreateSelling,
   MyAdsScreen,
+  SearchResultScreen
 } from "../screens";
 import { Admin_Home, CreateRoom } from "../screens/Admin";
 import AllRoomsScreen from "../screens/Admin/All_Rooms";
@@ -67,6 +68,7 @@ function AppNavigator() {
             name={NAVIGATION.PROFILE}
             component={ProfileScreen}
           />
+
         </>
       ) : user === null ? (
         <>
@@ -123,6 +125,11 @@ function AppNavigator() {
             options={options}
             name={NAVIGATION.MY_ADS}
             component={MyAdsScreen}
+          />
+                    <Stack.Screen
+            options={options}
+            name={NAVIGATION.SEARCH_RESULT_SCREEN}
+            component={SearchResultScreen}
           />
         </>
       )}

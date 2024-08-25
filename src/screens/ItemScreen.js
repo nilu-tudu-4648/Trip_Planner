@@ -9,7 +9,7 @@ import {
   Linking,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { AppButton, AppText, DrawerHeader } from "../components";
+import { AppButton, AppLoader, AppText, DrawerHeader } from "../components";
 import Carousel from "react-native-reanimated-carousel";
 import { SIZES } from "../constants/theme";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,10 +34,10 @@ const ItemScreen = ({ route }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const data = route?.params?.param;
-  const [liked, setliked] = useState(false);
   const [details, setdetails] = useState([]);
+  const [likedData, setlikedData] = useState(0);
+  const [loading, setloading] = useState(false);
   const addtoLikedPlace = async () => {
-    setliked(!liked);
     try {
       const userLikedPlaces = user.likedPlaces || [];
       const checkLiked = userLikedPlaces.includes(data.adTitle)
@@ -52,7 +52,7 @@ const ItemScreen = ({ route }) => {
       console.log(error);
     }
   };
-  const addDataToDB = async () => {
+  const addViewDataToDB = async () => {
     try {
       const adCollectionRef = collection(
         db,
@@ -77,8 +77,52 @@ const ItemScreen = ({ route }) => {
     }
   };
   React.useEffect(() => {
-    addDataToDB();
+    addViewDataToDB();
   }, [data]);
+  const addDataToDB = async () => {
+    addtoLikedPlace();
+    setloading(true);
+    try {
+        const adCollectionRef = collection(
+            db,
+            FIRESTORE_COLLECTIONS.ITEM_LIKE_VIEWS
+        );
+        const docRef = doc(adCollectionRef, data.id);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+            const docData = docSnap.data();
+            const currentLikedArray = docData.liked || [];
+            setlikedData(currentLikedArray.length)
+            if (currentLikedArray.includes(user.id)) {
+                // If user already liked the item, remove from the liked array
+                await updateDoc(docRef, {
+                    liked: currentLikedArray.filter((id) => id !== user.id),
+                });
+                setlikedData((prev) => prev - 1); // Decrement the likedData count
+            } else {
+                // If user hasn't liked the item yet, add to the liked array
+                await updateDoc(docRef, {
+                    liked: arrayUnion(user.id),
+                });
+                setlikedData((prev) => prev + 1); // Increment the likedData count
+            }
+        } else {
+            // If the document does not exist, create it with the user as the first liked entry
+            const adData = {
+                adTitle: [user.id],
+                liked: [user.id], // Initialize liked array with the user ID
+            };
+            await setDoc(docRef, adData);
+            setlikedData(1); // Set likedData to 1 as it's the first like
+        }
+    } catch (error) {
+        console.error(error);
+    } finally {
+        setloading(false);
+    }
+};
+
 
   const mobileNumber = "9155186701";
   const initiateWhatsApp = () => {
@@ -138,6 +182,7 @@ const ItemScreen = ({ route }) => {
   };
   return (
     <SafeAreaView className="flex-1 bg-white relative py-5">
+       {loading && <AppLoader loading={loading} /> }
       <DrawerHeader user={user} iconColor={"black"} />
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-4">
         <View className="relative bg-white shadow-lg">
@@ -179,7 +224,9 @@ const ItemScreen = ({ route }) => {
             </AppText>
             {!data.ads && (
               <TouchableOpacity
-                onPress={() => addtoLikedPlace()}
+              onPress={async () => {// Toggle the liked state
+                await addDataToDB(); // Call the function after toggling the state
+              }}
                 className="w-10 h-10 rounded-md items-center justify-center"
               >
                 <AntDesign
@@ -197,12 +244,12 @@ const ItemScreen = ({ route }) => {
           <View
             style={{ height: 0.7, backgroundColor: "gray", marginVertical: 1 }}
           />
-          <View className="flex-row items-center space-x-2 my-1">
+          <View className="flex-row items-center justify-between space-x-2 my-1">
             <AppText className="text-[#8C9EA6] text-[15px] font-bold">
-              {data?.address}
+              {data?.location}
             </AppText>
             <AppText className="text-[#8C9EA6] text-[15px] font-bold">
-              {details? details : "1"} views
+           {likedData} likes   {details? details : "1"} views
             </AppText>
           </View>
         </View>

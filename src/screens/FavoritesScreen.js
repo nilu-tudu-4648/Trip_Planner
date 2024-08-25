@@ -1,7 +1,6 @@
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import React from "react";
 import { AppText, DrawerHeader } from "../components";
-import { useSelector } from "react-redux";
 import { NotFound } from "../../assets";
 import ItemCarDontainer from "../components/ItemCarDontainer";
 

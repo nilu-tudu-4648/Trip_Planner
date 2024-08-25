@@ -5,10 +5,11 @@ import { SIZES } from "../constants/theme";
 import AppSafeView from "../components/AppSafeView";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from '@react-navigation/native';
+import { NAVIGATION } from "../constants/routes";
 
 const SearchScreen = ({ route }) => {
   const [query, setQuery] = useState("");
-  const { mainData } = route.params;
+  const { mainData,user } = route.params;
   const navigation = useNavigation();
 
   const filterData = (query, data) => {
@@ -46,8 +47,7 @@ const SearchScreen = ({ route }) => {
 
   const handlePress = () => {
     if (filteredData.length > 0) {
-      console.log(filterData.length)
-      // navigation.navigate('FilteredListScreen', { filteredData });
+      navigation.navigate(NAVIGATION.SEARCH_RESULT_SCREEN, { filteredData,user });
     }
   };
 

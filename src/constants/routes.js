@@ -11,6 +11,7 @@ export const NAVIGATION = {
   CREATE_SELLING: "CreateSelling",
   MY_ADS: "MyAdsScreen",
   SEARCH_SCREEN: "SearchScreen",
+  SEARCH_RESULT_SCREEN: "SearchResultScreen",
   //admin
   ADMIN_HOME:"AdminHome",
   CREATE_ROOM:"CreateRoom",

@@ -13,42 +13,24 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { NAVIGATION } from "../constants/routes";
 
-const Discover = ({ route }) => {
-  const { user } = route.params;
-  const dispatch = useDispatch();
-  const navigation = useNavigation()
-  const [isLoading, setIsLoading] = useState(false);
-  const [mainData, setMainData] = useState([]);
+const  SearchResultScreen= ({ route }) => {
+  const { user,filteredData } = route.params;
+
   const [query, setQuery] = useState("");
-  const [sortCriteria, setSortCriteria] = useState(null); // State for sorting criteria
-  const sortData = (data) => {
-    if (!sortCriteria) return data; // Return data as is if no sorting criteria is set
+//   const [sortCriteria, setSortCriteria] = useState(null); // State for sorting criteria
+//   const sortData = (data) => {
+//     if (!sortCriteria) return data; // Return data as is if no sorting criteria is set
 
-    return data.slice().sort((a, b) => {
-      if (sortCriteria === "low-high") {
-        return a.rentPrice - b.rentPrice;
-      } else if (sortCriteria === "high-low") {
-        return b.rentPrice - a.rentPrice;
-      }
-      return 0; // Return 0 if no valid sorting criteria
-    });
-  };
+//     return data.slice().sort((a, b) => {
+//       if (sortCriteria === "low-high") {
+//         return a.rentPrice - b.rentPrice;
+//       } else if (sortCriteria === "high-low") {
+//         return b.rentPrice - a.rentPrice;
+//       }
+//       return 0; // Return 0 if no valid sorting criteria
+//     });
+//   };
 
-  const filterData = () => {
-    if (!query) {
-      return mainData; // Return all data if the query is empty
-    }
-    return mainData.filter(
-      (data) =>
-        data.adTitle.toLowerCase().includes(query.toLowerCase()) ||
-        data.address.toLowerCase().includes(query.toLowerCase())
-    );
-  };
-
-  const filteredData = sortData(filterData());
-  useEffect(() => {
-    getRoomsDataFunc(dispatch, setMainData, setIsLoading, user);
-  }, [user]);
 
   const AllRooms = () => {
     return (
@@ -58,7 +40,6 @@ const Discover = ({ route }) => {
             <>
               {filteredData.map((data, i) => {
                 const roomPicsData = data.roomPicsData || {};
-
                 // Extract image URLs if they exist, otherwise fallback to an empty array
                 const imageUrls = Object.values(roomPicsData).filter(
                   (url) => url && url.trim() !== ""
@@ -94,18 +75,10 @@ const Discover = ({ route }) => {
   return (
     <View className="flex-1 bg-white relative my-5">
       <DrawerHeader user={user} iconColor={"black"} />
-      <TouchableOpacity onPress={()=>navigation.navigate(NAVIGATION.SEARCH_SCREEN,{mainData,user})} className="m-1">
-        <AppSearchBar
-          editable={false}
-          // onChangeSearch={(text) => setQuery(text)}
-          // searchQuery={query}
-          placeholder={"For Sale:Houses & Apartments near Ranchi"}
-        />
-      </TouchableOpacity>
-      <ChipComponent setSortCriteria={setSortCriteria} />
-      {isLoading ? <AppLoader loading={isLoading} /> : <AllRooms />}
+      {/* <ChipComponent setSortCriteria={setSortCriteria} /> */}
+       <AllRooms />
     </View>
   );
 };
 
-export default Discover;
+export default SearchResultScreen;

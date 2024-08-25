@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": ["@react-native-voice/voice"],
+    "plugins": [
+      "@react-native-voice/voice"
+    ],
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -23,7 +25,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.nilesh98.Trip_Planner"
     },
     "web": {
       "favicon": "./assets/favicon.png"
